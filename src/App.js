@@ -8,7 +8,7 @@ import Product from "./Pages/Product";
 import Footer from "./Components/Footer/Footer";
 import ShopCategory from "./Pages/ShopCategory";
 import women_banner from "./Components/Assets/girl-hero.png";
-import men_banner from "./Components/Assets/Garçon-hero.png";
+import men_banner from "./Components/Assets/garcon-hero.png";
 import kid_banner from "./Components/Assets/bebe-hero.png";
 import LoginSignup from "./Pages/LoginSignup";
 import OrderConfirmation from "./Pages/OrderConfirmation"
