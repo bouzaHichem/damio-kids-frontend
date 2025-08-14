@@ -1,0 +1,47 @@
+/* Rating Component Styles */
+.rating {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.star {
+  font-size: 14px;
+  line-height: 1;
+  transition: color 0.2s ease;
+  user-select: none;
+}
+
+.star.filled {
+  color: #f59e0b;
+}
+
+.star.half {
+  color: #fbbf24;
+}
+
+.star.empty {
+  color: #d1d5db;
+}
+
+/* Size variations */
+.rating.small .star {
+  font-size: 12px;
+}
+
+.rating.large .star {
+  font-size: 16px;
+}
+
+.rating.extra-large .star {
+  font-size: 18px;
+}
+
+/* Interactive rating (for future use) */
+.rating.interactive .star {
+  cursor: pointer;
+}
+
+.rating.interactive .star:hover {
+  color: #f59e0b;
+}

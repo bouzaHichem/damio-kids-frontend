@@ -1,0 +1,13 @@
+.hero-only-image {
+    position: relative;
+    width: 100%;
+    height: 100vh; /* Full viewport height */
+    overflow: hidden;
+}
+
+.hero-full-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Keeps the image proportionally scaled */
+    display: block;
+}

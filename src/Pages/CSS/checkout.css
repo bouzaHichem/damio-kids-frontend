@@ -1,0 +1,157 @@
+.checkout-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 2rem;
+  font-family: 'Arial', sans-serif;
+  color: #2a2a2a;
+  background-color: #fff;
+}
+
+@media (min-width: 768px) {
+  .checkout-container {
+    grid-template-columns: 2fr 1fr;
+  }
+}
+
+.checkout-section {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.checkout-section h2 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 0.5rem;
+}
+
+.checkout-form input,
+.checkout-form select,
+.checkout-form textarea {
+  width: 100%;
+  padding: 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  background-color: #fff;
+}
+
+.checkout-form textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.checkout-order-summary {
+  background-color: #f9f9fb;
+  padding: 1.5rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+}
+
+.order-item,
+.order-subtotal,
+.order-shipping,
+.order-total {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+}
+
+.order-total {
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: #e60023;
+}
+
+.order-section-title {
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.checkout-button {
+  background-color: #f44336;
+  color: white;
+  font-size: 1rem;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 5px;
+  width: 100%;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.checkout-button:hover {
+  background-color: #d9372a;
+}
+
+.checkout-note {
+  font-size: 0.85rem;
+  color: #555;
+  margin-top: 1rem;
+  line-height: 1.5;
+}
+
+/* Delivery Method Section */
+.delivery-method-section {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  background-color: #f9f9fb;
+}
+
+.delivery-method-section h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #2a2a2a;
+}
+
+.delivery-method-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.delivery-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.delivery-option:hover {
+  background-color: #f0f0f0;
+}
+
+.delivery-option input[type="radio"] {
+  width: auto;
+  margin: 0;
+}
+
+.delivery-option span {
+  font-size: 0.95rem;
+  color: #2a2a2a;
+}
+
+/* Disabled select styling */
+select:disabled {
+  background-color: #f5f5f5;
+  color: #999;
+  cursor: not-allowed;
+}
+
+@media (min-width: 768px) {
+  .delivery-method-options {
+    flex-direction: row;
+    gap: 2rem;
+  }
+}
