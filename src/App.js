@@ -13,6 +13,7 @@ import kid_banner from "./Components/Assets/bebe-hero.png";
 import LoginSignup from "./Pages/LoginSignup";
 import OrderConfirmation from "./Pages/OrderConfirmation"
 import CollectionPage from "./Pages/CollectionPage"
+import SubcategoryPage from "./Pages/SubcategoryPage"
 import About from "./Pages/About";
 import Contact from "./Pages/Contact";
 import PrivacyPolicy from "./Pages/PrivacyPolicy";
@@ -38,7 +39,7 @@ function App() {
           <Route path="/garcon" element={<ShopCategory banner={men_banner} category="garcon" />} />
           <Route path="/fille" element={<ShopCategory banner={women_banner} category="fille" />} />
           <Route path="/bébé" element={<ShopCategory banner={kid_banner} category="bébé" />} />
-          <Route path='/:category/:subcategory' element={React.createElement(require('./Pages/SubcategoryPage').default)} />
+          <Route path='/:category/:subcategory' element={<SubcategoryPage />} />
           <Route path='/product' element={<Product />}>
             <Route path=':productId' element={<Product />} />
           </Route>
