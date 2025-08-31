@@ -6,6 +6,18 @@ import Item from "../Components/Item/Item";
 import { Link } from "react-router-dom";
 import { getImageUrl } from '../utils/imageUtils';
 
+// Normalize a string to a URL-friendly slug (remove accents/diacritics)
+const slugify = (str = '') =>
+  (str || '')
+    .toString()
+    .normalize('NFD')
+    .replace(/\p{Diacritic}/gu, '')
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/[^a-z0-9-]/g, '')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
+
 const ShopCategory = (props) => {
 
   const [allproducts, setAllProducts] = useState([]);
@@ -38,7 +50,7 @@ const ShopCategory = (props) => {
     // Update banner when categories or selected category change
     useEffect(() => {
       if (categories.length > 0 && props.category) {
-        const match = categories.find(c => (c.name || '').toLowerCase() === String(props.category).toLowerCase());
+        const match = categories.find(c => slugify(c.name) === slugify(String(props.category)));
         if (match?.bannerImage) {
           setCategoryBanner(getImageUrl(match.bannerImage));
         } else {
@@ -51,26 +63,22 @@ const ShopCategory = (props) => {
     useEffect(() => {
       if (allproducts.length > 0 && categories.length > 0) {
         const filtered = allproducts.filter((item) => {
-          // First, try to match by category name directly
-          if (item.category === props.category) {
-            return true;
-          }
-          
-          // Then, try to match by category ID
+          // Normalize by slug for robust comparison
+          const productCatSlug = slugify(String(item.category)) || slugify(String(item.categoryName || ''));
+          const targetSlug = slugify(String(props.category));
+          if (productCatSlug === targetSlug) return true;
+
+          // Try resolving by backend category _id reference
           const matchingCategory = categories.find(cat => 
-            cat.name === props.category || cat._id === item.category
+            String(cat._id) === String(item.category) || slugify(cat.name) === targetSlug
           );
-          
-          if (matchingCategory && matchingCategory._id === item.category) {
-            return true;
-          }
-          
-          return false;
+          return !!matchingCategory;
         });
         setFilteredProducts(filtered);
       } else {
         // Fallback to direct category name matching if categories haven't loaded yet
-        const filtered = allproducts.filter((item) => item.category === props.category);
+        const targetSlug = slugify(String(props.category));
+        const filtered = allproducts.filter((item) => slugify(String(item.category)) === targetSlug);
         setFilteredProducts(filtered);
       }
     }, [allproducts, categories, props.category])

@@ -129,6 +129,14 @@ const Navbar = () => {
     );
   }
 
+  // Helper to map category names to route segments and active keys
+  const normalizeKey = (name = '') => name.toLowerCase();
+  const toRouteSegment = (name = '') => {
+    const lower = name.toLowerCase();
+    if (lower === 'garçon') return 'garcon';
+    return lower;
+  };
+
   return (
     <div className='nav'>
       <Link to='/' onClick={() => { setMenu("shop"); closeMobileMenu() }} className="nav-logo">
@@ -171,12 +179,12 @@ const Navbar = () => {
           <li
             key={category.id}
             className="nav-menu-item nav-item-with-dropdown"
-            onMouseEnter={() => handleMouseEnter(category.name.toLowerCase())}
+            onMouseEnter={() => handleMouseEnter(normalizeKey(category.name))}
             onMouseLeave={handleMouseLeave}
-            onClick={() => handleMobileClick(category.name.toLowerCase())}
+            onClick={() => handleMobileClick(normalizeKey(category.name))}
           >
             <Link
-              to={`/${category.name.toLowerCase()}`}
+              to={`/${toRouteSegment(category.name)}`}
               className="nav-link"
               onClick={(e) => {
                 if (window.innerWidth <= 768 && category.subcategories?.length > 0) {
@@ -187,24 +195,24 @@ const Navbar = () => {
               {category.name}
               {category.subcategories?.length > 0 && (
                 <span className="dropdown-arrow">
-                  {activeDropdown === category.name.toLowerCase() ? '▲' : '▼'}
+                  {activeDropdown === normalizeKey(category.name) ? '▲' : '▼'}
                 </span>
               )}
             </Link>
-            {menu === category.name.toLowerCase() && <hr className="nav-underline" />}
+            {menu === normalizeKey(category.name) && <hr className="nav-underline" />}
 
             {/* Dropdown */}
             {category.subcategories?.length > 0 && (
               <div
                 className={`
                   nav-dropdown-menu
-                  ${activeDropdown === category.name.toLowerCase() ? 'show' : ''}
+                  ${activeDropdown === normalizeKey(category.name) ? 'show' : ''}
                 `}
               >
                 {category.subcategories.map((subcategory) => (
                   <Link
                     key={subcategory.id}
-                    to={`/${category.name.toLowerCase()}/${subcategory.name.toLowerCase().replace(/\s+/g, '-')}`}
+                    to={`/${toRouteSegment(category.name)}/${subcategory.name.toLowerCase().replace(/\s+/g, '-')}`}
                     className="nav-dropdown-item"
                     onClick={closeMobileMenu}
                   >
