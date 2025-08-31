@@ -24,7 +24,7 @@ const AllProducts = () => {
     category: searchParams.get('category') || 'all',
     priceRange: {
       min: parseInt(searchParams.get('minPrice')) || 0,
-      max: parseInt(searchParams.get('maxPrice')) || 10000
+      max: searchParams.get('maxPrice') ? parseInt(searchParams.get('maxPrice')) : null // do not cap by default
     },
     sizes: searchParams.get('sizes')?.split(',').filter(Boolean) || [],
     colors: searchParams.get('colors')?.split(',').filter(Boolean) || [],
@@ -42,7 +42,7 @@ const AllProducts = () => {
     if (newParams.q) params.set('q', newParams.q);
     if (newParams.category && newParams.category !== 'all') params.set('category', newParams.category);
     if (newParams.minPrice && newParams.minPrice > 0) params.set('minPrice', newParams.minPrice);
-    if (newParams.maxPrice && newParams.maxPrice < 10000) params.set('maxPrice', newParams.maxPrice);
+    if (newParams.maxPrice !== null && newParams.maxPrice !== undefined) params.set('maxPrice', newParams.maxPrice);
     if (newParams.sizes?.length > 0) params.set('sizes', newParams.sizes.join(','));
     if (newParams.colors?.length > 0) params.set('colors', newParams.colors.join(','));
     if (newParams.brands?.length > 0) params.set('brands', newParams.brands.join(','));
@@ -75,8 +75,8 @@ const AllProducts = () => {
       const searchParams = {
         q: params.searchQuery || searchQuery,
         category: params.filters?.category || filters.category,
-        minPrice: params.filters?.priceRange?.min || filters.priceRange.min,
-        maxPrice: params.filters?.priceRange?.max || filters.priceRange.max,
+        minPrice: params.filters?.priceRange?.min ?? filters.priceRange.min,
+        maxPrice: params.filters?.priceRange?.max ?? filters.priceRange.max,
         sizes: params.filters?.sizes?.join(',') || filters.sizes.join(','),
         colors: params.filters?.colors?.join(',') || filters.colors.join(','),
         brands: params.filters?.brands?.join(',') || filters.brands.join(','),
@@ -177,6 +177,19 @@ const AllProducts = () => {
     searchProducts();
   }, []); // Only run on mount
 
+  // If backend provides price range and no explicit max is set, adopt it
+  useEffect(() => {
+    if (filterOptions?.priceRange && (filters.priceRange.max === null || filters.priceRange.max === undefined)) {
+      setFilters(prev => ({
+        ...prev,
+        priceRange: {
+          ...prev.priceRange,
+          max: filterOptions.priceRange.max || prev.priceRange.max
+        }
+      }));
+    }
+  }, [filterOptions]);
+
   // Handle browser back/forward
   useEffect(() => {
     const handlePopState = () => {
@@ -186,7 +199,7 @@ const AllProducts = () => {
         category: params.get('category') || 'all',
         priceRange: {
           min: parseInt(params.get('minPrice')) || 0,
-          max: parseInt(params.get('maxPrice')) || 10000
+          max: params.get('maxPrice') ? parseInt(params.get('maxPrice')) : null
         },
         sizes: params.get('sizes')?.split(',').filter(Boolean) || [],
         colors: params.get('colors')?.split(',').filter(Boolean) || [],

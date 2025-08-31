@@ -1,15 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { backend_url } from "../App";
 import "./CSS/ShopCategory.css";
 import dropdown_icon from '../Components/Assets/dropdown_icon.png'
 import Item from "../Components/Item/Item";
 import { Link } from "react-router-dom";
+import { getImageUrl } from '../utils/imageUtils';
 
 const ShopCategory = (props) => {
 
   const [allproducts, setAllProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
+  const [categoryBanner, setCategoryBanner] = useState('');
 
   const fetchInfo = () => { 
     fetch(`${backend_url}/allproducts`)
@@ -32,6 +34,18 @@ const ShopCategory = (props) => {
       fetchInfo();
       fetchCategories();
     }, [])
+
+    // Update banner when categories or selected category change
+    useEffect(() => {
+      if (categories.length > 0 && props.category) {
+        const match = categories.find(c => (c.name || '').toLowerCase() === String(props.category).toLowerCase());
+        if (match?.bannerImage) {
+          setCategoryBanner(getImageUrl(match.bannerImage));
+        } else {
+          setCategoryBanner('');
+        }
+      }
+    }, [categories, props.category])
 
     // Filter products when allproducts or categories change
     useEffect(() => {
@@ -63,7 +77,7 @@ const ShopCategory = (props) => {
     
   return (
     <div className="shopcategory">
-      <img src={props.banner} className="shopcategory-banner" alt="" />
+      <img src={categoryBanner || props.banner} className="shopcategory-banner" alt="Category banner" />
       <div className="shopcategory-indexSort">
         <p><span>Showing 1 - {filteredProducts.length}</span> out of {filteredProducts.length} Products</p>
         <div className="shopcategory-sort">Sort by  <img src={dropdown_icon} alt="" /></div>
