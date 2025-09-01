@@ -1,6 +1,6 @@
 import React, { useContext, useRef, useState, useEffect } from 'react'
 import './Navbar.css'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import logo from '../Assets/ltogod.JPG'
 import cart_icon from '../Assets/cart_icon.png'
 import { ShopContext } from '../../Context/ShopContext'
@@ -17,6 +17,7 @@ const Navbar = () => {
   const { getTotalCartItems } = useContext(ShopContext);
   const menuRef = useRef();
   const dropdownTimeoutRef = useRef(null);
+  const location = useLocation();
 
   // Fetch categories from the backend
   useEffect(() => {
@@ -160,7 +161,7 @@ const Navbar = () => {
           <Link to='/' className="nav-link">
             Shop
           </Link>
-          {menu === "shop" && <hr className="nav-underline" />}
+          {location.pathname === '/' && <hr className="nav-underline" />}
         </li>
 
         {/* All Products Link */}
@@ -171,7 +172,7 @@ const Navbar = () => {
           <Link to='/products' className="nav-link">
             All Products
           </Link>
-          {menu === "products" && <hr className="nav-underline" />}
+          {(location.pathname === '/products' || location.pathname.startsWith('/products/')) && <hr className="nav-underline" />}
         </li>
 
         {/* Dynamic Categories */}
@@ -181,45 +182,60 @@ const Navbar = () => {
             className="nav-menu-item nav-item-with-dropdown"
             onMouseEnter={() => handleMouseEnter(normalizeKey(category.name))}
             onMouseLeave={handleMouseLeave}
-            onClick={() => handleMobileClick(normalizeKey(category.name))}
           >
-            <Link
-              to={`/${toRouteSegment(category.name)}`}
-              className="nav-link"
-              onClick={(e) => {
-                if (window.innerWidth <= 768 && category.subcategories?.length > 0) {
-                  e.preventDefault();
-                }
-              }}
-            >
-              {category.name}
+            <div className="nav-item-row">
+              <Link
+                to={`/${toRouteSegment(category.name)}`}
+                className="nav-link"
+              >
+                {category.name}
+              </Link>
               {category.subcategories?.length > 0 && (
-                <span className="dropdown-arrow">
-                  {activeDropdown === normalizeKey(category.name) ? '▲' : '▼'}
-                </span>
+                <button
+                  type="button"
+                  className="submenu-toggle"
+                  aria-expanded={activeDropdown === normalizeKey(category.name)}
+                  aria-controls={`submenu-${category.id || toRouteSegment(category.name)}`}
+                  aria-label={`${activeDropdown === normalizeKey(category.name) ? 'Collapse' : 'Expand'} ${category.name} subcategories`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleMobileClick(normalizeKey(category.name));
+                  }}
+                >
+                  <span className="dropdown-arrow">
+                    {activeDropdown === normalizeKey(category.name) ? '▲' : '▼'}
+                  </span>
+                </button>
               )}
-            </Link>
-            {menu === normalizeKey(category.name) && <hr className="nav-underline" />}
+            </div
+            {(location.pathname === `/${toRouteSegment(category.name)}` || location.pathname.startsWith(`/${toRouteSegment(category.name)}/`)) && <hr className="nav-underline" />}
 
             {/* Dropdown */}
             {category.subcategories?.length > 0 && (
               <div
+                id={`submenu-${category.id || toRouteSegment(category.name)}`}
                 className={`
                   nav-dropdown-menu
                   ${activeDropdown === normalizeKey(category.name) ? 'show' : ''}
                 `}
               >
-                {category.subcategories.map((subcategory) => (
-                  <Link
-                    key={subcategory.id}
-                    to={`/${toRouteSegment(category.name)}/${subcategory.name.toLowerCase().replace(/\s+/g, '-')}`}
-                    className="nav-dropdown-item"
-                    onClick={closeMobileMenu}
-                  >
-                    <span className="subcategory-dot"></span>
-                    {subcategory.name}
-                  </Link>
-                ))}
+                {category.subcategories.map((subcategory) => {
+                  const subSlug = subcategory.name.toLowerCase().replace(/\s+/g, '-');
+                  const subPath = `/${toRouteSegment(category.name)}/${subSlug}`;
+                  const isActiveSub = location.pathname === subPath || location.pathname.startsWith(`${subPath}/`);
+                  return (
+                    <Link
+                      key={subcategory.id}
+                      to={subPath}
+                      className={`nav-dropdown-item ${isActiveSub ? 'active' : ''}`}
+                      onClick={closeMobileMenu}
+                    >
+                      <span className="subcategory-dot"></span>
+                      {subcategory.name}
+                    </Link>
+                  );
+                })}
               </div>
             )}
           </li>

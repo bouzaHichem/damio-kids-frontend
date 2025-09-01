@@ -159,6 +159,28 @@
     display: flex;
     align-items: center;
     transition: background 0.2s ease;
+    position: relative;
+}
+
+/* Animated underline for subcategory items */
+.nav-dropdown-item::after {
+    content: '';
+    position: absolute;
+    left: 16px; /* respect horizontal padding */
+    right: 16px;
+    bottom: 6px;
+    height: 2px;
+    border-radius: 9999px;
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 250ms ease;
+}
+
+/* Show underline when hovered OR when active (persist) */
+.nav-dropdown-item:hover::after,
+.nav-dropdown-item.active::after {
+    transform: scaleX(1);
 }
 .nav-dropdown-item:hover {
     background: #f5f5f5;
@@ -361,4 +383,37 @@
     font-size: 14px;
     z-index: 1001;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+/* Link + toggle row inside a menu item */
+.nav-item-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Toggle button for submenus (mobile) */
+.submenu-toggle {
+    border: none;
+    background: transparent;
+    padding: 6px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* Hide the toggle on desktop, show only on mobile */
+@media (min-width: 769px) {
+    .submenu-toggle {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .nav-menu-item {
+        align-items: stretch;
+    }
+    .nav-item-row {
+        justify-content: space-between;
+        width: 100%;
+    }
 }
