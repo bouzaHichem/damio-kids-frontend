@@ -208,8 +208,8 @@ const Navbar = () => {
                   </span>
                 </button>
               )}
-            </div
-            {(location.pathname === `/${toRouteSegment(category.name)}` || location.pathname.startsWith(`/${toRouteSegment(category.name)}/`)) && <hr className="nav-underline" />}
+            </div>
+{(location.pathname === `/${toRouteSegment(category.name)}` || location.pathname.startsWith(`/${toRouteSegment(category.name)}/`)) && <hr className="nav-underline" />}
 
             {/* Dropdown */}
             {category.subcategories?.length > 0 && (
