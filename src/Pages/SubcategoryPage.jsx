@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { backend_url } from '../App';
+import { productService } from '../services/apiService';
 import Item from '../Components/Item/Item';
 import './CSS/ShopCategory.css';
 
@@ -18,18 +19,13 @@ const slugify = (str = '') =>
 const SubcategoryPage = () => {
   const { category, subcategory } = useParams();
   const navigate = useNavigate();
-  const [allProducts, setAllProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [filtered, setFiltered] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const load = async () => {
     try {
-      const [prodsRes, catsRes] = await Promise.all([
-        fetch(`${backend_url}/allproducts`).then(r => r.json()),
-        fetch(`${backend_url}/categories`).then(r => r.json())
-      ]);
-      if (Array.isArray(prodsRes)) setAllProducts(prodsRes);
+      const catsRes = await fetch(`${backend_url}/categories`).then(r => r.json());
       if (catsRes?.success) setCategories(catsRes.categories || []);
     } finally {
       setLoading(false);
@@ -46,31 +42,24 @@ const SubcategoryPage = () => {
   }, [categories, category, subcategory]);
 
   useEffect(() => {
-    if (!active) return;
-    const { cat, sub } = active;
-
-    const matchCategory = (p) => {
-      // category stored as name or Mongo _id
-      return (
-        (typeof p.category === 'string' && slugify(p.category) === slugify(cat.name)) ||
-        (p.category && String(p.category) === String(cat._id)) ||
-        (p.categoryName && slugify(p.categoryName) === slugify(cat.name))
-      );
+    const fetchBySub = async () => {
+      if (!active?.cat || !active?.sub) return;
+      try {
+        const res = await productService.searchProducts({
+          categoryId: active.cat._id,
+          subcategoryId: active.sub.id,
+          page: 1,
+          limit: 100
+        });
+        const list = res?.products || res?.data?.products || [];
+        setFiltered(list);
+      } catch (e) {
+        console.error('Subcategory fetch failed', e);
+        setFiltered([]);
+      }
     };
-
-    const matchSubcategory = (p) => {
-      // subcategory can be id (number/string) or name
-      if (!sub) return true; // should not happen, but be defensive
-      if (p.subcategory == null) return false;
-      return (
-        String(p.subcategory) === String(sub.id) ||
-        slugify(String(p.subcategory)) === slugify(sub.name)
-      );
-    };
-
-    const list = allProducts.filter(p => matchCategory(p) && matchSubcategory(p));
-    setFiltered(list);
-  }, [allProducts, active]);
+    fetchBySub();
+  }, [active]);
 
   if (loading) {
     return (

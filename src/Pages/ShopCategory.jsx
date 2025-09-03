@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { backend_url } from "../App";
+import { productService } from '../services/apiService';
 import "./CSS/ShopCategory.css";
 import dropdown_icon from '../Components/Assets/dropdown_icon.png'
 import Item from "../Components/Item/Item";
@@ -25,11 +26,18 @@ const ShopCategory = (props) => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [categoryBanner, setCategoryBanner] = useState('');
 
-  const fetchInfo = () => { 
-    fetch(`${backend_url}/allproducts`)
-            .then((res) => res.json()) 
-            .then((data) => setAllProducts(data))
+  const fetchInfo = async () => { 
+    try {
+      const cat = categories.find(c => slugify(c.name) === slugify(String(props.category)));
+      if (!cat) { setAllProducts([]); return; }
+      const res = await productService.searchProducts({ categoryId: cat._id, page: 1, limit: 120 });
+      const list = res?.products || res?.data?.products || [];
+      setAllProducts(list);
+    } catch (e) {
+      console.error('Category fetch failed', e);
+      setAllProducts([]);
     }
+  }
 
   const fetchCategories = () => {
     fetch(`${backend_url}/categories`)
@@ -43,9 +51,14 @@ const ShopCategory = (props) => {
   }
 
     useEffect(() => {
-      fetchInfo();
       fetchCategories();
     }, [])
+
+    useEffect(() => {
+      if (categories.length) {
+        fetchInfo();
+      }
+    }, [categories, props.category])
 
     // Update banner when categories or selected category change
     useEffect(() => {
@@ -59,29 +72,10 @@ const ShopCategory = (props) => {
       }
     }, [categories, props.category])
 
-    // Filter products when allproducts or categories change
+    // With server-side filtering, just mirror the loaded list
     useEffect(() => {
-      if (allproducts.length > 0 && categories.length > 0) {
-        const filtered = allproducts.filter((item) => {
-          // Normalize by slug for robust comparison
-          const productCatSlug = slugify(String(item.category)) || slugify(String(item.categoryName || ''));
-          const targetSlug = slugify(String(props.category));
-          if (productCatSlug === targetSlug) return true;
-
-          // Try resolving by backend category _id reference
-          const matchingCategory = categories.find(cat => 
-            String(cat._id) === String(item.category) || slugify(cat.name) === targetSlug
-          );
-          return !!matchingCategory;
-        });
-        setFilteredProducts(filtered);
-      } else {
-        // Fallback to direct category name matching if categories haven't loaded yet
-        const targetSlug = slugify(String(props.category));
-        const filtered = allproducts.filter((item) => slugify(String(item.category)) === targetSlug);
-        setFilteredProducts(filtered);
-      }
-    }, [allproducts, categories, props.category])
+      setFilteredProducts(allproducts);
+    }, [allproducts])
     
   return (
     <div className="shopcategory">
