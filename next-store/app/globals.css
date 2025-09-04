@@ -12,3 +12,7 @@ html, body { height: 100%; }
 body { font-feature-settings: "liga" 1, "calt" 1; }
 h1,h2,h3,h4,.display { font-family: var(--font-display, var(--font-body)); letter-spacing: -0.01em; }
 
+/* Utility: hide scrollbar for cosmetic carousels */
+.no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
