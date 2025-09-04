@@ -11,6 +11,7 @@ frontend/.env
 admin/.env
 
 # Build outputs
+build/
 frontend/build/
 admin/build/
 dist/
@@ -25,6 +26,7 @@ backend/upload/images/*
 !**/upload/.gitkeep
 
 # Build files
+build/
 frontend/build/
 admin/build/
 dist/
@@ -82,3 +84,7 @@ Thumbs.db
 
 # Vercel
 .vercel
+
+# Next.js
+.next
+next-store/.next

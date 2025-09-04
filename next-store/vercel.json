@@ -1,0 +1,10 @@
+{
+  "framework": "nextjs",
+  "buildCommand": "npm run build",
+  "outputDirectory": ".next",
+  "env": {
+    "NEXT_PUBLIC_API_URL": "https://damio-kids-backend.onrender.com",
+    "NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME": "dwuhl6boo"
+  }
+}
+

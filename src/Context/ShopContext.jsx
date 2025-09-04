@@ -92,7 +92,7 @@ const ShopContextProvider = (props) => {
     return totalItem;
   };
 
-  const addToCart = (itemId) => {
+  const addToCart = (itemId, variant = null) => {
     setCartItems((prev) => ({ ...prev, [itemId]: (prev[itemId] || 0) + 1 }));
 
     const authToken = localStorage.getItem("auth-token");
@@ -104,7 +104,7 @@ const ShopContextProvider = (props) => {
           'auth-token': authToken,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ itemId }),
+        body: JSON.stringify(variant ? { itemId, variant } : { itemId }),
       });
     }
   };
