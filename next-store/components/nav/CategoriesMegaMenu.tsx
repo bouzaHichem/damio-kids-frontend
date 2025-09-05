@@ -4,7 +4,8 @@ import { motion } from "framer-motion"
 import Link from "next/link"
 import { useEffect, useMemo, useState } from "react"
 import Image from "next/image"
-import { getCategories, getShopImages, type ShopImage } from "../../lib/services"
+// Fetch via internal proxy endpoints to avoid CORS from the browser
+// import { getCategories, getShopImages, type ShopImage } from "../../lib/services"
 
 const ICONS: Record<string, string> = {
   Kids: "🧒",
@@ -20,22 +21,19 @@ export function CategoriesMegaMenu() {
   const [categories, setCategories] = useState<Array<{ id: string | number; name: string; bannerImage?: string }>>([])
 
   useEffect(() => {
-    // Fetch categories and map thumbnails from admin-managed shop images
+    // Fetch categories and map thumbnails via internal proxies
     ;(async () => {
       try {
-        const [cats, images] = await Promise.all([getCategories(), getShopImages()])
-        const catImgs = new Map<string, ShopImage>()
-        const normalize = (s?: string) => (s || "").toLowerCase().trim()
-        // Prefer images with imageType === 'category' and matching category name
-        images.category.forEach((img) => {
-          const key = normalize(img.category)
-          if (key) catImgs.set(key, img)
-        })
-        // Fallback: feature/promotional tagged with category name
-        ;[...images.feature, ...images.promotional].forEach((img) => {
-          const key = normalize(img.category)
-          if (key && !catImgs.has(key)) catImgs.set(key, img)
-        })
+        const [catsRes, imgsRes] = await Promise.all([
+          fetch('/api/proxy/categories'),
+          fetch('/api/proxy/shop-images'),
+        ])
+        const cats = (await catsRes.json()) as Array<{ id: string | number; name: string; bannerImage?: string }>
+        const images = (await imgsRes.json()) as { hero: any[]; category: any[]; promotional: any[]; feature: any[] }
+        const catImgs = new Map<string, any>()
+        const normalize = (s?: string) => (s || '').toLowerCase().trim()
+        images.category.forEach((img) => { const key = normalize(img.category); if (key) catImgs.set(key, img) })
+        ;[...images.feature, ...images.promotional].forEach((img) => { const key = normalize(img.category); if (key && !catImgs.has(key)) catImgs.set(key, img) })
         const mapped = cats.map((c) => {
           const key = normalize(c.name)
           const match = catImgs.get(key)
@@ -44,9 +42,13 @@ export function CategoriesMegaMenu() {
         })
         setCategories(mapped)
       } catch {
-        // Fallback to categories only if shop-images request fails
-        const cats = await getCategories().catch(() => [])
-        setCategories(cats as any)
+        try {
+          const catsRes = await fetch('/api/proxy/categories')
+          const cats = await catsRes.json()
+          setCategories(cats as any)
+        } catch {
+          setCategories([])
+        }
       }
     })()
   }, [])
