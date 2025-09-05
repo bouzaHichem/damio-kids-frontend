@@ -11,7 +11,8 @@ export default async function HomePage() {
     getShopImages(),
   ])
 
-  const products = [...popular, ...newCollections].slice(0, 6)
+  // Build product cards baseline
+  const products = [...popular, ...newCollections].slice(0, 9)
   const cards = products.map((p) => ({
     id: String(p.id),
     slug: String(p.id), // use id as slug for PDP route
@@ -22,8 +23,22 @@ export default async function HomePage() {
     colors: (p as any).colors || [],
   }))
 
-  const heroImages = (shopImages.hero || []).map((i: any) => i.image || i.url).filter(Boolean)
+  // Hero prioritizes admin 'hero' images; carousel pulls from 'feature' then 'promotional'.
+  const heroImagesPrimary = (shopImages.hero || []).map((i: any) => i.image || i.url).filter(Boolean)
+  const carouselSources = [
+    ...(shopImages.feature || []),
+    ...(shopImages.promotional || []),
+    ...(shopImages.category || []),
+  ].map((i: any) => i.image || i.url).filter(Boolean)
+
+  // Fallbacks: if admin has no images, use top product images
+  const fallbackProductImgs = cards.map((c) => c.images?.[0]).filter(Boolean)
+  const heroImages = heroImagesPrimary.length ? heroImagesPrimary : fallbackProductImgs
   const promoImages = (shopImages.promotional || []).map((i: any) => i.image || i.url).filter(Boolean)
-  return <DynamicHome initialProducts={cards} heroImages={heroImages} promoImages={promoImages} />
+
+  // Use combined carousel sources with fallback
+  const carousel = carouselSources.length ? carouselSources : fallbackProductImgs
+
+  return <DynamicHome initialProducts={cards} heroImages={carousel} promoImages={promoImages} />
 }
 
