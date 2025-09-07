@@ -196,6 +196,7 @@ export const DEFAULT_TRANSLATIONS = {
   'home.new_in': 'New in',
   'home.bestsellers': 'Bestsellers',
   'home.eco_fabrics': 'Eco fabrics',
+  'home.view_all_new': 'View All New Products',
 
   // Miscellaneous
   'misc.currency': '$',

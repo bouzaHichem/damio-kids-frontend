@@ -237,6 +237,39 @@ const Shop = () => {
         </div>
       </section>
 
+      {/* New Arrivals Section */}
+      <section className="new-section">
+        <div className="container">
+          <div className="new-header">
+            <h2 className="section-title">{t('home.new_in')}</h2>
+            <p className="new-subtitle">{t('home.trending')}</p>
+          </div>
+          <div className="new-grid">
+            {(() => {
+              const now = Date.now();
+              const recencyMs = 1000 * 60 * 60 * 24 * 30; // 30 days
+              const list = (products || []).filter(p => p?.newCollection || p?.isNew || (p?.date && (now - new Date(p.date).getTime() < recencyMs))).slice(0, 8);
+              return list.map((p, i) => (
+                <div className="new-card reveal" style={{['--d']: `${i * 40}ms`}} key={p.id || i}>
+                  <div className="new-badge">{t('home.new_in')}</div>
+                  <div className="new-media">
+                    <img src={getImageUrl(p.image)} alt={p.name} loading="lazy" onError={(e) => { e.target.src = '/api/placeholder/600/400'}} />
+                  </div>
+                  <div className="new-info">
+                    <h3 className="new-title">{p.name}</h3>
+                    <p className="new-desc">{p.description || ' '}</p>
+                    <div className="new-price">{p.new_price}<span className="cur"> د.ج</span></div>
+                  </div>
+                </div>
+              ));
+            })()}
+          </div>
+          <div className="new-cta">
+            <a className="view-all-new" href="/products?sortBy=newest">{t('home.view_all_new')}</a>
+          </div>
+        </div>
+      </section>
+
       {/* Featured Categories */}
       <section className="featured-categories">
         <div className="container">
