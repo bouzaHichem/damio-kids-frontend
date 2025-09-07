@@ -13,6 +13,8 @@
     width: 100%;
     max-width: 300px;
     margin: 0 auto;
+    /* enable subtle 3D context for parallax */
+    perspective: 800px;
 }
 
 .item:hover {
@@ -29,6 +31,20 @@
     overflow: hidden;
     border-radius: 12px 12px 0 0;
     background: #f8fafc;
+    transform-style: preserve-3d;
+    transition: transform .35s ease, box-shadow .35s ease;
+}
+/* soft glow layer that appears with parallax */
+.item-image-container::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(60% 40% at 70% 20%, rgba(255, 255, 255, .35), transparent 60%),
+                radial-gradient(50% 50% at 30% 80%, rgba(17, 24, 39, .10), transparent 60%);
+    opacity: 0;
+    transform: translateZ(12px);
+    transition: opacity .35s ease;
 }
 
 .item-image-container img {
@@ -41,6 +57,19 @@
 
 .item:hover .item-image-container img {
     transform: scale(1.05);
+}
+/* very light parallax tilt on hover (CSS-only) */
+@media (hover:hover) and (pointer:fine) {
+  .item:hover .item-image-container {
+      transform: rotateX(3deg) rotateY(-3deg) translateZ(6px);
+      box-shadow: 0 10px 30px rgba(0,0,0,.12);
+  }
+  .item:hover .item-image-container::after { opacity: .12; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .item-image-container,
+  .item:hover .item-image-container { transition: none; transform: none; }
+  .item-image-container::after { display: none; }
 }
 
 /* Badges */
