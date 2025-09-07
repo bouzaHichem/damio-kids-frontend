@@ -203,6 +203,20 @@
     gap: 20px;
     flex-shrink: 0;
 }
+
+/* Language switcher */
+.language-switcher,
+.nav-lang-switch {
+    appearance: none;
+    -webkit-appearance: none;
+    padding: 6px 10px;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    background: #fff;
+    font-weight: 600;
+    color: #374151;
+}
+.language-switcher:focus { outline: 2px solid #4f46e5; outline-offset: 2px; }
 .nav-login-btn,
 .nav-logout-btn {
     width: 100px;

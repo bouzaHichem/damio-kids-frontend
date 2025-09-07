@@ -6,20 +6,15 @@ import React, { createContext, useContext, useReducer, useEffect } from 'react';
 export const SUPPORTED_LANGUAGES = {
   en: { code: 'en', name: 'English', nativeName: 'English', direction: 'ltr' },
   fr: { code: 'fr', name: 'French', nativeName: 'Français', direction: 'ltr' },
-  es: { code: 'es', name: 'Spanish', nativeName: 'Español', direction: 'ltr' },
   ar: { code: 'ar', name: 'Arabic', nativeName: 'العربية', direction: 'rtl' },
-  de: { code: 'de', name: 'German', nativeName: 'Deutsch', direction: 'ltr' },
-  it: { code: 'it', name: 'Italian', nativeName: 'Italiano', direction: 'ltr' },
-  pt: { code: 'pt', name: 'Portuguese', nativeName: 'Português', direction: 'ltr' },
-  zh: { code: 'zh', name: 'Chinese', nativeName: '中文', direction: 'ltr' },
-  ja: { code: 'ja', name: 'Japanese', nativeName: '日本語', direction: 'ltr' },
-  ko: { code: 'ko', name: 'Korean', nativeName: '한국어', direction: 'ltr' }
 };
 
 // Translation keys and default values (English)
 export const DEFAULT_TRANSLATIONS = {
   // Navigation
-  'nav.home': 'Home',
+'nav.home': 'Home',
+  'nav.shop': 'Shop',
+  'nav.all_products': 'All Products',
   'nav.products': 'Products',
   'nav.categories': 'Categories',
   'nav.about': 'About Us',
@@ -154,6 +149,7 @@ export const DEFAULT_TRANSLATIONS = {
   'success.email_sent': 'Email sent successfully',
   
   // Loading messages
+'loading.generic': 'Loading...',
   'loading.products': 'Loading products...',
   'loading.cart': 'Loading cart...',
   'loading.checkout': 'Processing checkout...',
@@ -193,6 +189,14 @@ export const DEFAULT_TRANSLATIONS = {
   'pwa.online': 'You are back online',
   'pwa.install_prompt': 'Add Damio Kids to your home screen for a better experience',
   
+// Home
+  'home.shop_by_category': 'Shop by Category',
+  'home.shop_all': 'Shop all',
+  'home.trending': 'Trending',
+  'home.new_in': 'New in',
+  'home.bestsellers': 'Bestsellers',
+  'home.eco_fabrics': 'Eco fabrics',
+
   // Miscellaneous
   'misc.currency': '$',
   'misc.and': 'and',

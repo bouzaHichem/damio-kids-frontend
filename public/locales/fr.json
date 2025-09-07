@@ -1,0 +1,15 @@
+{
+  "nav.shop": "Boutique",
+  "nav.all_products": "Tous les produits",
+  "account.login": "Se connecter",
+  "account.logout": "Se déconnecter",
+  "loading.generic": "Chargement...",
+
+  "home.shop_by_category": "Acheter par catégorie",
+  "home.shop_all": "Tout acheter",
+  "home.trending": "Tendance",
+  "home.new_in": "Nouveautés",
+  "home.bestsellers": "Meilleures ventes",
+  "home.eco_fabrics": "Tissus éco"
+}
+

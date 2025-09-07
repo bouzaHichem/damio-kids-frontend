@@ -6,9 +6,11 @@ import cart_icon from '../Assets/cart_icon.png'
 import { ShopContext } from '../../Context/ShopContext'
 import { backend_url } from '../../App'
 import nav_dropdown from '../Assets/nav_dropdown.png'
+import { LanguageSwitcher, useI18n } from '../../utils/i18n'
 
 const Navbar = () => {
   const [menu, setMenu] = useState("shop");
+  const { t } = useI18n();
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -125,7 +127,7 @@ const Navbar = () => {
         <Link to='/' className="nav-logo">
           <img src={logo} alt="logo" />
         </Link>
-        <div className="nav-loading">Loading...</div>
+        <div className="nav-loading">{t('loading.generic')}</div>
       </div>
     );
   }
@@ -159,7 +161,7 @@ const Navbar = () => {
           onClick={() => { setMenu("shop"); closeMobileMenu() }}
         >
           <Link to='/' className="nav-link">
-            Shop
+            {t('nav.shop')}
           </Link>
           {location.pathname === '/' && <hr className="nav-underline" />}
         </li>
@@ -170,7 +172,7 @@ const Navbar = () => {
           onClick={() => { setMenu("products"); closeMobileMenu() }}
         >
           <Link to='/products' className="nav-link">
-            All Products
+            {t('nav.all_products')}
           </Link>
           {(location.pathname === '/products' || location.pathname.startsWith('/products/')) && <hr className="nav-underline" />}
         </li>
@@ -244,6 +246,7 @@ const Navbar = () => {
 
       {/* Cart & Login */}
       <div className="nav-login-cart">
+        <LanguageSwitcher className="nav-lang-switch" />
         {localStorage.getItem('auth-token') ? (
           <button 
             onClick={() => {
@@ -252,11 +255,11 @@ const Navbar = () => {
             }}
             className="nav-logout-btn"
           >
-            Logout
+            {t('account.logout')}
           </button>
         ) : (
           <Link to='/login'>
-            <button className="nav-login-btn">Login</button>
+            <button className="nav-login-btn">{t('account.login')}</button>
           </Link>
         )}
 

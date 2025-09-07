@@ -1,0 +1,15 @@
+{
+  "nav.shop": "Shop",
+  "nav.all_products": "All Products",
+  "account.login": "Login",
+  "account.logout": "Logout",
+  "loading.generic": "Loading...",
+
+  "home.shop_by_category": "Shop by Category",
+  "home.shop_all": "Shop all",
+  "home.trending": "Trending",
+  "home.new_in": "New in",
+  "home.bestsellers": "Bestsellers",
+  "home.eco_fabrics": "Eco fabrics"
+}
+

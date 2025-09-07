@@ -6,9 +6,11 @@ import './CSS/Shop.css'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import { getImageUrl } from '../utils/imageUtils'
+import { useI18n } from '../utils/i18n'
 
 const Shop = () => {
   const { products, productsLoaded } = useContext(ShopContext)
+  const { t } = useI18n()
   const navigate = useNavigate()
   const [filteredProducts, setFilteredProducts] = useState([])
   const [loading, setLoading] = useState(true)
@@ -174,7 +176,7 @@ const Shop = () => {
     return (
       <div className="shop-loading">
         <div className="loading-spinner"></div>
-        <p>Loading our beautiful collection...</p>
+        <p>{t('loading.generic')}</p>
       </div>
     )
   }
@@ -192,14 +194,14 @@ const Shop = () => {
           <p className="hero-subtitle">Outfits that keep up with little adventures — comfy, colorful, and crafted to last.</p>
 
           <div className="hero-chips">
-            <span className="chip">New in</span>
-            <span className="chip">Bestsellers</span>
-            <span className="chip">Eco fabrics</span>
+            <span className="chip">{t('home.new_in')}</span>
+            <span className="chip">{t('home.bestsellers')}</span>
+            <span className="chip">{t('home.eco_fabrics')}</span>
           </div>
 
           <div className="cta-row">
-            <button className="btn-loom" onClick={() => handleCategoryNavigation('all')}>Shop all</button>
-            <button className="btn-ghost" onClick={() => setSortBy('popular')}>Trending</button>
+            <button className="btn-loom" onClick={() => handleCategoryNavigation('all')}>{t('home.shop_all')}</button>
+            <button className="btn-ghost" onClick={() => setSortBy('popular')}>{t('home.trending')}</button>
           </div>
 
           <div className="hero-stats">
@@ -238,7 +240,7 @@ const Shop = () => {
       {/* Featured Categories */}
       <section className="featured-categories">
         <div className="container">
-          <h2 className="section-title">Shop by Category</h2>
+          <h2 className="section-title">{t('home.shop_by_category')}</h2>
           <div className="featured-grid">
             {getPromotionalImages().map((promo, index) => (
               <div key={promo.id || index} className="featured-card">
