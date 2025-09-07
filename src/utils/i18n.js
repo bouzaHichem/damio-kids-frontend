@@ -252,15 +252,13 @@ class TranslationLoader {
   
   async _loadTranslationFile(languageCode) {
     try {
-      // Try to load from local file first
-      const response = await fetch(`/locales/${languageCode}.json`);
+      // Load from public folder at runtime
+      const response = await fetch(`/locales/${languageCode}.json`, { cache: 'no-store' });
       if (response.ok) {
         return await response.json();
       }
-      
-      // Fallback to dynamic import if available
-      const module = await import(`../locales/${languageCode}.json`);
-      return module.default || module;
+      // If not found, fall through to fallback
+      return await this._generateBasicTranslations(languageCode);
     } catch (error) {
       // If no translation file exists, generate basic translations
       return await this._generateBasicTranslations(languageCode);
