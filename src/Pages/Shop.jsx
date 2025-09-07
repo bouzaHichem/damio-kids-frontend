@@ -180,12 +180,28 @@ const Shop = () => {
   }
 
   return (
-    <div className="shop">
+    <div className="shop loom-bg">
       {/* Hero Section */}
-      <section className="shop-hero">
+      <section className="shop-hero loom-hero">
+        {/* animated ribbon background */}
+        <div className="loom-ribbon ribbon-a" aria-hidden></div>
+        <div className="loom-ribbon ribbon-b" aria-hidden></div>
+
         <div className="hero-content">
-          <h1 className="hero-title">Premium Kids Fashion</h1>
-          <p className="hero-subtitle">Discover the perfect outfit for your little ones with our carefully curated collection</p>
+          <h1 className="hero-title">Play. Shine. Repeat.</h1>
+          <p className="hero-subtitle">Outfits that keep up with little adventures — comfy, colorful, and crafted to last.</p>
+
+          <div className="hero-chips">
+            <span className="chip">New in</span>
+            <span className="chip">Bestsellers</span>
+            <span className="chip">Eco fabrics</span>
+          </div>
+
+          <div className="cta-row">
+            <button className="btn-loom" onClick={() => handleCategoryNavigation('all')}>Shop all</button>
+            <button className="btn-ghost" onClick={() => setSortBy('popular')}>Trending</button>
+          </div>
+
           <div className="hero-stats">
             <div className="stat">
               <span className="stat-number">{products.length}+</span>
@@ -201,8 +217,21 @@ const Shop = () => {
             </div>
           </div>
         </div>
-        <div className="hero-image">
+
+        <div className="hero-image hero-art">
           <img src={getHeroImage()} alt={shopImages.hero[0]?.title || "Kids Fashion"} />
+          <span className="glow" aria-hidden></span>
+        </div>
+      </section>
+
+      {/* Quick category chips */}
+      <section className="category-chips">
+        <div className="container chips-row">
+          {categories.map(c => (
+            <button key={c.id} className={`chip chip-link ${selectedCategory === c.id ? 'active' : ''}`} onClick={() => handleCategoryNavigation(c.id)}>
+              <span className="dot" /> {c.name}
+            </button>
+          ))}
         </div>
       </section>
 
