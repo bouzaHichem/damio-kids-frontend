@@ -9,7 +9,7 @@ import { getImageUrl } from '../utils/imageUtils'
 import { useI18n } from '../utils/i18n'
 
 const Shop = () => {
-  const { products, productsLoaded } = useContext(ShopContext)
+  const { products, productsLoaded, addToCart } = useContext(ShopContext)
   const { t } = useI18n()
   const navigate = useNavigate()
   const [filteredProducts, setFilteredProducts] = useState([])
@@ -392,20 +392,42 @@ const Shop = () => {
                 <div className="collection-info">
                   <h3>{collection.name}</h3>
                   <div className="collection-products">
-                    {/* You can replace with slider component if needed */}
-                    {collection.products.slice(0, 4).map(product => (
-                      <div key={product._id} className="product-card">
-                        <img
-                          src={product.image ? getImageUrl(product.image) : '/api/placeholder/300/200'}
-                          alt={product.name}
-                          loading="lazy"
-                          onError={(e) => {
-                            e.target.src = '/api/placeholder/300/200';
-                          }}
-                        />
-                        <h4>{product.name}</h4>
-                      </div>
-                    ))}
+                    {/* Preview a few products from this collection */}
+                    {Array.isArray(collection.products) && collection.products.slice(0, 4).map((product, index) => {
+                      const id = product.id ?? product._id ?? index;
+                      const hasDiscount = Number(product.old_price) > Number(product.new_price);
+                      const discountPct = hasDiscount
+                        ? Math.round(((Number(product.old_price) - Number(product.new_price)) / Number(product.old_price)) * 100)
+                        : 0;
+                      return (
+                        <div key={id} className="product-card fade-in">
+                          {hasDiscount && (
+                            <span className="discount-badge">-{discountPct}%</span>
+                          )}
+                          <img
+                            src={product.image ? getImageUrl(product.image) : '/api/placeholder/300/200'}
+                            alt={product.name}
+                            loading="lazy"
+                            onError={(e) => {
+                              e.target.src = '/api/placeholder/300/200';
+                            }}
+                          />
+                          <h4 className="product-title">{product.name}</h4>
+                          <div className="price-row">
+                            <span className="price-new">{product.new_price}<span className="cur"> د.ج</span></span>
+                            {hasDiscount && (
+                              <span className="price-old">{product.old_price} د.ج</span>
+                            )}
+                          </div>
+                          <button
+                            className="mini-add-btn"
+                            onClick={() => addToCart(id)}
+                          >
+                            Add to Cart
+                          </button>
+                        </div>
+                      );
+                    })}
                   </div>
                   <button 
                     className="view-all-btn"
