@@ -7,11 +7,18 @@ import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import { getImageUrl } from '../utils/imageUtils'
 import { useI18n } from '../utils/i18n'
+import ProductSection from '../Components/ProductSection/ProductSection'
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchBestSellingProducts, fetchFeaturedProducts, fetchPromoProducts, selectBestSelling, selectFeatured, selectPromo } from '../store/productSectionsSlice'
 
 const Shop = () => {
   const { products, productsLoaded, addToCart } = useContext(ShopContext)
   const { t } = useI18n()
   const navigate = useNavigate()
+  const dispatch = useDispatch()
+  const featured = useSelector(selectFeatured)
+  const promo = useSelector(selectPromo)
+  const bestSelling = useSelector(selectBestSelling)
   const [filteredProducts, setFilteredProducts] = useState([])
   const [loading, setLoading] = useState(true)
   const [selectedCategory, setSelectedCategory] = useState('all')
@@ -49,6 +56,13 @@ const Shop = () => {
       applyFilters()
     }
   }, [productsLoaded, products, selectedCategory, sortBy, priceRange, selectedSizes])
+
+  // Load dynamic sections
+  useEffect(() => {
+    dispatch(fetchFeaturedProducts({ page: 1, limit: 8 }))
+    dispatch(fetchPromoProducts({ page: 1, limit: 8 }))
+    dispatch(fetchBestSellingProducts({ page: 1, limit: 8 }))
+  }, [dispatch])
 
   const fetchShopImages = async () => {
     try {
@@ -270,107 +284,10 @@ const Shop = () => {
         </div>
       </section>
 
-      {/* Featured Categories */}
-      <section className="featured-categories">
-        <div className="container">
-          <h2 className="section-title">{t('home.shop_by_category')}</h2>
-          <div className="featured-grid">
-            {getPromotionalImages().map((promo, index) => (
-              <div key={promo.id || index} className="featured-card">
-                <div className="featured-image">
-                  <img 
-                    src={promo.imageUrl} 
-                    alt={promo.title}
-                    loading="lazy"
-                    onError={(e) => {
-                      e.target.src = '/api/placeholder/600/400';
-                    }}
-                  />
-                  <div className="featured-overlay">
-                    <h3>{promo.title}</h3>
-                    <p>{promo.description || 'Discover our latest collection'}</p>
-                    <button 
-                      className="shop-now-btn"
-                      onClick={() => {
-                        if (promo.category) {
-                          handleCategoryNavigation(promo.category.toLowerCase());
-                        }
-                      }}
-                    >
-                      Shop Now
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
-            {/* Fallback promotional cards if no images from backend */}
-            {getPromotionalImages().length === 0 && [
-              {
-                title: 'New Arrivals',
-                description: 'Fresh styles for little ones',
-                image: '/api/placeholder/600/400',
-                action: () => handleCategoryFilter('newest')
-              },
-              {
-                title: 'Trending Now', 
-                description: 'Popular picks this season',
-                image: '/api/placeholder/600/400',
-                action: () => setSortBy('popular')
-              }
-            ].map((fallback, index) => (
-              <div key={`fallback-${index}`} className="featured-card">
-                <div className="featured-image">
-                  <img src={fallback.image} alt={fallback.title} loading="lazy" />
-                  <div className="featured-overlay">
-                    <h3>{fallback.title}</h3>
-                    <p>{fallback.description}</p>
-                    <button className="shop-now-btn" onClick={fallback.action}>
-                      Shop Now
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Category Cards */}
-      <section className="category-section">
-        <div className="container">
-          <div className="category-grid">
-            {categories.map(category => (
-              <div 
-                key={category.id} 
-                className={`category-card ${
-                  selectedCategory === category.id ? 'active' : ''
-                }`}
-                onClick={() => handleCategoryNavigation(category.id)}
-              >
-                <div className="category-image">
-                  <img 
-                    src={category.id === 'all' ? category.fallbackImage : getCategoryImage(category.name)} 
-                    alt={category.name}
-                    loading="lazy"
-                    onError={(e) => {
-                      e.target.src = category.fallbackImage;
-                    }}
-                  />
-                </div>
-                <div className="category-info">
-                  <h3>{category.name}</h3>
-                  <span className="category-count">
-                    {category.id === 'all' 
-                      ? products.length 
-                      : products.filter(p => p.category?.toLowerCase() === category.id.toLowerCase()).length
-                    } items
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* Dynamic Product Sections replacing Shop by Category */}
+      <ProductSection title="Featured Products" products={featured.items} loading={featured.status==='loading'} error={featured.error} />
+      <ProductSection title="Promo Products" products={promo.items} loading={promo.status==='loading'} error={promo.error} />
+      <ProductSection title="Best-Selling Products" products={bestSelling.items} loading={bestSelling.status==='loading'} error={bestSelling.error} />
 
       {/* Collections Section */}
       <section className="collections-section">

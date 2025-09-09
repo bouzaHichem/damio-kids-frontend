@@ -1,0 +1,16 @@
+.pcard{background:#fff;border:1px solid #e5e7eb;border-radius:16px;overflow:hidden;box-shadow:0 6px 16px rgba(0,0,0,.06);transition:box-shadow .3s ease;display:flex;flex-direction:column}
+.pcard:hover{box-shadow:0 12px 30px rgba(0,0,0,.12)}
+.pcard-media{position:relative;aspect-ratio:1/1;overflow:hidden}
+.pcard-media img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s ease}
+.pcard:hover .pcard-media img{transform:scale(1.05)}
+.pcard-badge{position:absolute;top:10px;left:10px;background:linear-gradient(135deg,#ef4444,#f97316);color:#fff;font-weight:800;font-size:12px;padding:6px 10px;border-radius:999px;z-index:2}
+.pcard-actions{position:absolute;inset:auto 10px 10px 10px;display:flex;gap:8px;justify-content:center;opacity:0;transform:translateY(6px);transition:all .3s ease}
+.pcard:hover .pcard-actions{opacity:1;transform:translateY(0)}
+.pcard-btn{flex:1;background:#0f172a;color:#fff;border:none;border-radius:10px;padding:8px 10px;font-weight:800;cursor:pointer}
+.pcard-icon{background:#ffffffcc;border:1px solid #e5e7eb;color:#0f172a;border-radius:10px;padding:8px 10px;cursor:pointer}
+.pcard-info{padding:12px 14px}
+.pcard-title{font-size:1rem;font-weight:700;color:#0f172a;margin:0 0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pcard-price{display:flex;gap:8px;align-items:center}
+.pcard-price .price-new{font-weight:800;color:#0f172a}
+.pcard-price .cur{color:#475569;font-weight:700}
+.pcard-price .price-old{color:#94a3b8;text-decoration:line-through;font-weight:600}

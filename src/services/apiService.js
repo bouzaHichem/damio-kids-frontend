@@ -165,6 +165,21 @@ export const productService = {
     return response.data;
   },
 
+  async getFeaturedProducts(params = {}) {
+    const response = await api.get('/api/products/featured', { params });
+    return response.data;
+  },
+
+  async getPromoProducts(params = {}) {
+    const response = await api.get('/api/products/promo', { params });
+    return response.data;
+  },
+
+  async getBestSellingProducts(params = {}) {
+    const response = await api.get('/api/products/best-selling', { params });
+    return response.data;
+  },
+
   async addProduct(productData) {
     const response = await api.post('/addproduct', productData);
     return response.data;
