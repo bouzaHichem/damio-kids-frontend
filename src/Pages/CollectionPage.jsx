@@ -4,8 +4,10 @@ import { backend_url } from '../App';
 import Item from '../Components/Item/Item';
 import axios from 'axios';
 import './CSS/CollectionPage.css';
+import { useI18n } from '../utils/i18n';
 
 const CollectionPage = () => {
+  const { t } = useI18n();
   const { collectionId } = useParams();
   const navigate = useNavigate();
   const [collection, setCollection] = useState(null);
@@ -82,7 +84,7 @@ const CollectionPage = () => {
     return (
       <div className="collection-loading">
         <div className="loading-spinner"></div>
-        <p>Loading collection...</p>
+        <p>{t('collection.loading')}</p>
       </div>
     );
   }
@@ -90,10 +92,10 @@ const CollectionPage = () => {
   if (!collection) {
     return (
       <div className="collection-not-found">
-        <h2>Collection Not Found</h2>
-        <p>The collection you're looking for doesn't exist.</p>
+        <h2>{t('collection.not_found')}</h2>
+        <p>{t('collection.not_found_desc')}</p>
         <button onClick={() => navigate('/')} className="back-to-shop-btn">
-          Back to Shop
+          {t('action.back_to_shop')}
         </button>
       </div>
     );
@@ -120,17 +122,17 @@ const CollectionPage = () => {
               <div className="collection-info">
                 <h1>{collection.name}</h1>
                 <p className="collection-description">
-                  Discover our carefully curated {collection.name.toLowerCase()} featuring {collection.products.length} premium items for your little ones.
+                  {t('collection.hero_desc', { name: (collection.name || '').toLowerCase(), count: collection.products.length })}
                 </p>
                 <div className="collection-stats">
                   <span className="stat">
-                    <strong>{collection.products.length}</strong> Products
+                    <strong>{collection.products.length}</strong> {t('home.stats.products_label')}
                   </span>
                   <span className="stat">
-                    <strong>Premium</strong> Quality
+                    <strong>{t('collection.premium_quality')}</strong>
                   </span>
                   <span className="stat">
-                    <strong>Fast</strong> Delivery
+                    <strong>{t('home.stats.fast')}</strong> {t('home.stats.delivery_label')}
                   </span>
                 </div>
               </div>
@@ -143,9 +145,9 @@ const CollectionPage = () => {
       <section className="breadcrumb">
         <div className="container">
           <nav>
-            <span onClick={() => navigate('/')} className="breadcrumb-link">Home</span>
+            <span onClick={() => navigate('/')} className="breadcrumb-link">{t('nav.home')}</span>
             <span className="breadcrumb-separator">/</span>
-            <span onClick={() => navigate('/')} className="breadcrumb-link">Shop</span>
+            <span onClick={() => navigate('/')} className="breadcrumb-link">{t('nav.shop')}</span>
             <span className="breadcrumb-separator">/</span>
             <span className="breadcrumb-current">{collection.name}</span>
           </nav>
@@ -157,23 +159,23 @@ const CollectionPage = () => {
         <div className="container">
           {/* Filter Bar */}
           <div className="filter-bar">
-            <div className="filter-left">
-              <h2>{collection.name} Collection</h2>
-              <p>{filteredProducts.length} products available</p>
-            </div>
-            <div className="filter-right">
-              <div className="sort-group">
-                <label>Sort by:</label>
-                <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
-                  <option value="newest">Newest First</option>
-                  <option value="popular">Most Popular</option>
-                  <option value="price-low">Price: Low to High</option>
-                  <option value="price-high">Price: High to Low</option>
-                  <option value="name-az">Name: A-Z</option>
-                  <option value="name-za">Name: Z-A</option>
-                </select>
+              <div className="filter-left">
+                <h2>{t('collection.title', { name: collection.name })}</h2>
+                <p>{t('collection.products_available', { count: filteredProducts.length })}</p>
               </div>
-            </div>
+              <div className="filter-right">
+                <div className="sort-group">
+                  <label>{t('filter.sort_by')}</label>
+                  <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+                    <option value="newest">{t('filter.sort.newest')}</option>
+                    <option value="popular">{t('filter.sort.popular')}</option>
+                    <option value="price-low">{t('filter.sort.price_low')}</option>
+                    <option value="price-high">{t('filter.sort.price_high')}</option>
+                    <option value="name-az">{t('filter.sort.name_az')}</option>
+                    <option value="name-za">{t('filter.sort.name_za')}</option>
+                  </select>
+                </div>
+              </div>
           </div>
 
           {/* Products Grid */}
@@ -193,10 +195,10 @@ const CollectionPage = () => {
             ) : (
               <div className="no-products">
                 <div className="no-products-content">
-                  <h3>No products found</h3>
-                  <p>This collection is currently empty.</p>
-                  <button onClick={() => navigate('/shop')} className="browse-all-btn">
-                    Browse All Products
+                  <h3>{t('search.no_results')}</h3>
+                  <p>{t('collection.empty_desc')}</p>
+                  <button onClick={() => navigate('/shop')} className="browse_all-btn">
+                    {t('search.browse_all_products')}
                   </button>
                 </div>
               </div>
@@ -206,10 +208,10 @@ const CollectionPage = () => {
           {/* Collection Actions */}
           <div className="collection-actions">
             <button onClick={() => navigate('/shop')} className="back-to-shop-btn">
-              Back to Shop
+              {t('action.back_to_shop')}
             </button>
             <button onClick={() => navigate('/')} className="continue-shopping-btn">
-              Continue Shopping
+              {t('cart.continue_shopping')}
             </button>
           </div>
         </div>
@@ -221,18 +223,18 @@ const CollectionPage = () => {
           <div className="features-grid">
             <div className="feature-card">
               <div className="feature-icon">🎯</div>
-              <h3>Curated Selection</h3>
-              <p>Each item in this collection has been carefully selected for quality and style</p>
+              <h3>{t('collection.feature.curated.title')}</h3>
+              <p>{t('collection.feature.curated.desc')}</p>
             </div>
             <div className="feature-card">
               <div className="feature-icon">⭐</div>
-              <h3>Premium Quality</h3>
-              <p>Made from the finest materials with attention to every detail</p>
+              <h3>{t('collection.feature.premium.title')}</h3>
+              <p>{t('collection.feature.premium.desc')}</p>
             </div>
             <div className="feature-card">
               <div className="feature-icon">🚚</div>
-              <h3>Fast Shipping</h3>
-              <p>Quick and reliable delivery across Algeria for all collection items</p>
+              <h3>{t('collection.feature.shipping.title')}</h3>
+              <p>{t('collection.feature.shipping.desc')}</p>
             </div>
           </div>
         </div>

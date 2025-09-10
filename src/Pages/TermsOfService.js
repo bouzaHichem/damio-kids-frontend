@@ -1,15 +1,17 @@
 import React from 'react';
 import './CSS/LegalPages.css';
+import { useI18n } from '../utils/i18n';
 
 const TermsOfService = () => {
+  const { t } = useI18n();
   return (
     <div className="legal-page">
       <header className="legal-header">
-        <h1>Conditions d’Utilisation</h1>
+        <h1>{t('legal.terms.title')}</h1>
         <nav className="breadcrumb">
-          <a href="/">Accueil</a> / <span>Conditions d’Utilisation</span>
+          <a href="/">{t('nav.home')}</a> / <span>{t('legal.terms.title')}</span>
         </nav>
-        <p className="last-updated">Dernière mise à jour : 3 août 2025</p>
+        <p className="last-updated">{t('legal.last_updated', { date: '3 août 2025' })}</p>
       </header>
       <section className="legal-content">
         <div className="content-wrapper">

@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { backend_url } from "../App";
 import "./CSS/LoginSignup.css";
+import { useI18n } from "../utils/i18n";
 
 const LoginSignup = () => {
 
-  const [state,setState] = useState("Login");
+  const { t } = useI18n();
+  const [mode,setMode] = useState('login');
   const [formData,setFormData] = useState({username:"",email:"",password:""});
 
   const changeHandler = (e) => {
@@ -60,22 +62,22 @@ const LoginSignup = () => {
   return (
     <div className="loginsignup">
       <div className="loginsignup-container">
-        <h1>{state}</h1>
+        <h1>{mode === 'login' ? t('account.login') : t('account.register')}</h1>
         <div className="loginsignup-fields">
-          {state==="Sign Up"?<input type="text" placeholder="Your name" name="username" value={formData.username} onChange={changeHandler}/>:<></>}
-          <input type="email" placeholder="Email address" name="email" value={formData.email} onChange={changeHandler}/>
-          <input type="password" placeholder="Password" name="password" value={formData.password} onChange={changeHandler}/>
+          {mode==='signup' ? <input type="text" placeholder={t('account.username_placeholder')} name="username" value={formData.username} onChange={changeHandler}/> : <></>}
+          <input type="email" placeholder={t('account.email_placeholder')} name="email" value={formData.email} onChange={changeHandler}/>
+          <input type="password" placeholder={t('account.password_placeholder')} name="password" value={formData.password} onChange={changeHandler}/>
         </div>
 
-        <button onClick={()=>{state==="Login"?login():signup()}}>Continue</button>
+        <button onClick={()=>{mode==='login'?login():signup()}}>{t('action.continue')}</button>
 
-        {state==="Login"?
-        <p className="loginsignup-login">Create an account? <span onClick={()=>{setState("Sign Up")}}>Click here</span></p>
-        :<p className="loginsignup-login">Already have an account? <span onClick={()=>{setState("Login")}}>Login here</span></p>}
+        {mode==='login' ?
+        <p className="loginsignup-login">{t('account.create_account_prompt')} <span onClick={()=>{setMode('signup')}}>{t('account.click_here')}</span></p>
+        :<p className="loginsignup-login">{t('account.already_have_account')} <span onClick={()=>{setMode('login')}}>{t('account.login_here')}</span></p>}
 
         <div className="loginsignup-agree">
           <input type="checkbox" name="" id="" />
-          <p>By continuing, i agree to the terms of use & privacy policy.</p>
+          <p>{t('account.agree_terms_full')}</p>
         </div>
       </div>
     </div>

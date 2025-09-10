@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import './CSS/Contact.css';
 // import instagram_icon from '../Components/Assets/instagram_icon.png'; // Not used
+import { useI18n } from '../utils/i18n';
 
 const Contact = () => {
+  const { t } = useI18n();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -44,21 +46,21 @@ const Contact = () => {
   return (
     <div className="contact-page">
       <header className="contact-header">
-        <h1>Contact Us</h1>
+        <h1>{t('nav.contact')}</h1>
         <nav className="breadcrumb">
-          <a href="/">Home</a> / <span>Contact</span>
+          <a href="/">{t('nav.home')}</a> / <span>{t('nav.contact')}</span>
         </nav>
       </header>
       
       <section className="contact-content">
-        <h2>Get in Touch</h2>
+        <h2>{t('contact.get_in_touch')}</h2>
         
         <div className="contact-form-container">
           <form className={`contact-form ${isLoading ? 'loading' : ''}`} onSubmit={handleSubmit}>
             <input 
               type="text" 
               name="name"
-              placeholder="Your Name" 
+              placeholder={t('contact.your_name')} 
               value={formData.name}
               onChange={handleInputChange}
               required 
@@ -66,14 +68,14 @@ const Contact = () => {
             <input 
               type="email" 
               name="email"
-              placeholder="Your Email" 
+              placeholder={t('contact.your_email')} 
               value={formData.email}
               onChange={handleInputChange}
               required 
             />
             <textarea 
               name="message"
-              placeholder="Your Message" 
+              placeholder={t('contact.your_message')} 
               value={formData.message}
               onChange={handleInputChange}
               required
@@ -83,32 +85,32 @@ const Contact = () => {
               className={isLoading ? 'loading' : ''}
               disabled={isLoading}
             >
-              {isLoading ? 'Sending...' : 'Send Message'}
+              {isLoading ? t('contact.sending') : t('contact.send_message')}
             </button>
             
             {submitStatus === 'success' && (
               <div className="form-message success">
-                Thank you! Your message has been sent successfully.
+                {t('contact.success_message')}
               </div>
             )}
             {submitStatus === 'error' && (
               <div className="form-message error">
-                Sorry, there was an error sending your message. Please try again.
+                {t('contact.error_message')}
               </div>
             )}
           </form>
         </div>
         
         <div className="contact-info">
-          <h2>Visit Us</h2>
-          <p>📍 Address: nouvelle ville UV17,Constantine, Algeria 25000</p>
-          <p>📞 Phone: 0554 32 88 31</p>
-          <p>✉️ Email: damiokids24@gmail.com</p>
-          <p>🕒 Hours: Mon-Sat 9AM-7PM, Sun 10AM-6PM</p>
+          <h2>{t('contact.visit_us')}</h2>
+          <p>📍 {t('contact.address')}: nouvelle ville UV17, Constantine, Algeria 25000</p>
+          <p>📞 {t('contact.phone')}: 0554 32 88 31</p>
+          <p>✉️ {t('contact.email')}: damiokids24@gmail.com</p>
+          <p>🕒 {t('contact.hours')}: Mon-Sat 9AM-7PM, Sun 10AM-6PM</p>
         </div>
         
         <div className="contact-social">
-          <h2>Follow Us</h2>
+          <h2>{t('footer.follow_us')}</h2>
           <div className="social-icons">
             <a href="https://www.instagram.com/damio.kids?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" rel="noopener noreferrer">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">

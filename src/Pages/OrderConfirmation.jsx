@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./CSS/OrderConfirmation.css";
+import { useI18n } from "../utils/i18n";
 
 const OrderConfirmation = () => {
   const navigate = useNavigate();
+  const { t } = useI18n();
   const [orderNumber, setOrderNumber] = useState("");
 
   useEffect(() => {
@@ -44,12 +46,12 @@ const OrderConfirmation = () => {
         {/* Main Content */}
         <div className="confirmation-main">
           <h1 className="confirmation-title">
-            🎉 تم تأكيد طلبك بنجاح!
+            🎉 {t('order_confirmation.title')}
           </h1>
           
           <div className="order-info">
             <div className="order-number">
-              <span className="order-label">رقم الطلب:</span>
+              <span className="order-label">{t('order_confirmation.order_number_label')}</span>
               <span className="order-value">#{orderNumber}</span>
             </div>
           </div>
@@ -58,9 +60,9 @@ const OrderConfirmation = () => {
             <div className="message-card">
               <div className="message-icon">📞</div>
               <div className="message-text">
-                <h2>سنتصل بك قريباً لتأكيد طلبك</h2>
+                <h2>{t('order_confirmation.call_soon_title')}</h2>
                 <p>
-                  شكراً لك على اختيارك متجرنا! سيقوم فريق خدمة العملاء بالاتصال بك خلال الـ 24 ساعة القادمة لتأكيد تفاصيل طلبك وترتيب عملية التسليم.
+                  {t('order_confirmation.call_soon_desc')}
                 </p>
               </div>
             </div>
@@ -68,31 +70,31 @@ const OrderConfirmation = () => {
             <div className="info-cards">
               <div className="info-card">
                 <div className="info-icon">🚚</div>
-                <h3>التوصيل السريع</h3>
-                <p>سيتم توصيل طلبك في غضون 2-5 أيام عمل</p>
+                <h3>{t('order_confirmation.fast_delivery')}</h3>
+                <p>{t('order_confirmation.fast_delivery_desc')}</p>
               </div>
 
               <div className="info-card">
                 <div className="info-icon">💰</div>
-                <h3>الدفع عند الاستلام</h3>
-                <p>ادفع بكل راحة عند استلام طلبك</p>
+                <h3>{t('order_confirmation.cod_title')}</h3>
+                <p>{t('order_confirmation.cod_desc')}</p>
               </div>
 
               <div className="info-card">
                 <div className="info-icon">🔄</div>
-                <h3>إرجاع مجاني</h3>
-                <p>إمكانية الإرجاع خلال 7 أيام من الاستلام</p>
+                <h3>{t('order_confirmation.free_return')}</h3>
+                <p>{t('order_confirmation.free_return_desc')}</p>
               </div>
             </div>
           </div>
 
           <div className="important-notes">
-            <h3>📋 ملاحظات مهمة:</h3>
+            <h3>📋 {t('order_confirmation.important_notes')}</h3>
             <ul>
-              <li>تأكد من أن رقم هاتفك متاح للاتصال</li>
-              <li>سيتم تأكيد العنوان ووقت التسليم معك هاتفياً</li>
-              <li>احتفظ برقم الطلب للمتابعة</li>
-              <li>في حالة عدم الرد، سنحاول الاتصال عدة مرات</li>
+              <li>{t('order_confirmation.note_1')}</li>
+              <li>{t('order_confirmation.note_2')}</li>
+              <li>{t('order_confirmation.note_3')}</li>
+              <li>{t('order_confirmation.note_4')}</li>
             </ul>
           </div>
 
@@ -101,21 +103,21 @@ const OrderConfirmation = () => {
               className="btn-primary"
               onClick={handleContinueShopping}
             >
-              🛍️ متابعة التسوق
+              🛍️ {t('cart.continue_shopping')}
             </button>
             
             <button 
               className="btn-secondary"
               onClick={handleBackToHome}
             >
-              🏠 العودة للرئيسية
+              🏠 {t('order_confirmation.back_home')}
             </button>
           </div>
 
           <div className="contact-info">
-            <h3>🤝 تحتاج مساعدة؟</h3>
+            <h3>🤝 {t('order_confirmation.need_help')}</h3>
             <p>
-              يمكنك التواصل معنا على:
+              {t('order_confirmation.contact_intro')}
               <br />
               📧 support@damiokids.com
               <br />
@@ -136,7 +138,7 @@ const OrderConfirmation = () => {
 
         {/* Auto-redirect notice */}
         <div className="auto-redirect">
-          <p>سيتم توجيهك تلقائياً للصفحة الرئيسية خلال 10 ثوان...</p>
+          <p>{t('order_confirmation.auto_redirect_notice', { seconds: 10 })}</p>
         </div>
       </div>
     </div>

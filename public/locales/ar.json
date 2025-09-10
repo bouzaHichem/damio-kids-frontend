@@ -1,8 +1,13 @@
 {
   "nav.shop": "المتجر",
   "nav.all_products": "كل المنتجات",
+  "nav.about": "من نحن",
+  "nav.cart": "السلة",
+  "nav.account": "حسابي",
+
   "account.login": "تسجيل الدخول",
   "account.logout": "تسجيل الخروج",
+
   "loading.generic": "جارٍ التحميل...",
 
   "home.shop_by_category": "تسوق حسب الفئة",
@@ -11,6 +16,79 @@
   "home.new_in": "وصل حديثًا",
   "home.bestsellers": "الأكثر مبيعًا",
   "home.eco_fabrics": "أقمشة صديقة للبيئة",
-  "home.view_all_new": "عرض كل الوافدين الجدد"
+  "home.view_all_new": "عرض كل الوافدين الجدد",
+  "home.hero_title": "العب. تألق. كرر.",
+  "home.hero_subtitle": "أزياء مريحة وملونة تدوم لمغامرات الصغار.",
+  "home.featured_products": "منتجات مميزة",
+  "home.promo_products": "عروض ترويجية",
+  "home.best_selling_products": "الأكثر مبيعًا",
+  "home.collections": "التشكيلات",
+  "home.stats.products_label": "منتجات",
+  "home.stats.quality_label": "جودة",
+  "home.stats.delivery_label": "توصيل",
+  "home.stats.fast": "سريع",
+
+  "category.boys": "أولاد",
+  "category.girls": "بنات",
+  "category.babies": "رضّع",
+
+  "action.view_all": "عرض الكل",
+  "action.add_to_cart": "أضف إلى السلة",
+  "action.apply": "تطبيق",
+
+  "cart.title": "سلة التسوق",
+  "cart.empty": "سلتك فارغة",
+  "cart.empty_subtitle": "أضف المنتجات التي تحبها وستظهر هنا.",
+  "cart.subtotal": "المجموع الفرعي",
+  "cart.shipping": "الشحن",
+  "cart.shipping_free": "مجاني",
+  "cart.total": "الإجمالي",
+  "cart.continue_shopping": "متابعة التسوق",
+  "cart.promo_code": "رمز ترويجي",
+  "cart.promo_placeholder": "أدخل الرمز",
+  "cart.proceed_to_checkout": "المتابعة إلى الدفع",
+  "cart.start_shopping": "ابدأ التسوق",
+
+  "checkout.title": "إتمام الشراء",
+  "checkout.order_summary": "ملخص الطلب",
+
+  "footer.brand_name": "داميو كيدز",
+  "footer.description": "ملابس أطفال عالية الجودة لكل مناسبة. الراحة تلتقي بالأناقة في مجموعتنا المختارة.",
+  "footer.shop_links": "روابط المتجر",
+  "footer.customer_service": "خدمة العملاء",
+  "footer.store_location": "موقع المتجر",
+  "footer.get_directions": "عرض الاتجاهات",
+  "footer.follow_us": "تابعنا",
+  "footer.newsletter": "النشرة البريدية",
+  "footer.stay_updated": "ابقَ على اطلاع",
+  "footer.newsletter_cta": "اشترك للحصول على عروض خاصة وتحديثات!",
+  "footer.newsletter_placeholder": "أدخل بريدك الإلكتروني",
+  "footer.subscribe": "اشترك",
+  "footer.privacy_policy": "سياسة الخصوصية",
+  "footer.terms_of_service": "شروط الخدمة",
+  "footer.contact_us": "اتصل بنا",
+  "footer.copyright": "© {year} داميو كيدز. جميع الحقوق محفوظة.",
+
+  "shop.collection_heading": "تشكيلتنا",
+
+  "filter.sort_by": "فرز حسب:",
+  "filter.sort.newest": "الأحدث أولاً",
+  "filter.sort.popular": "الأكثر شيوعًا",
+  "filter.sort.price_low": "السعر: من الأقل إلى الأعلى",
+  "filter.sort.price_high": "السعر: من الأعلى إلى الأقل",
+  "filter.clear_filters": "مسح الفلاتر",
+  "filter.price_range": "نطاق السعر",
+
+  "search.no_results": "لا توجد منتجات",
+  "search.results_count": "{count} نتيجة",
+  "search.try_adjusting": "جرّب تعديل المرشحات أو تصفح جميع الفئات",
+  "search.browse_all_products": "تصفح كل المنتجات",
+
+  "home.feature_fast_delivery.title": "توصيل سريع",
+  "home.feature_fast_delivery.desc": "مصمم لأكثر العملاء تطلبًا، في جميع أنحاء الجزائر.",
+  "home.feature_quality.title": "وعد بالتميّز",
+  "home.feature_quality.desc": "جودة منتجاتنا لا تضاهى.",
+  "home.feature_cod.title": "تسوّق بلا قلق",
+  "home.feature_cod.desc": "تدفع فقط عند استلام طلبك."
 }
 

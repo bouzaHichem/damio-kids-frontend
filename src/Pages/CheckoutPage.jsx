@@ -4,8 +4,10 @@ import { ShopContext } from "../Context/ShopContext";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { backend_url } from "../App";
+import { useI18n } from "../utils/i18n";
 
 const CheckoutPage = () => {
+  const { t } = useI18n();
   const { cartItems, products, getTotalCartAmount, setCartItems, getDefaultCart } = useContext(ShopContext);
   const [loading, setLoading] = useState(false);
 
@@ -185,12 +187,12 @@ const CheckoutPage = () => {
     <div className="checkout-container">
       {/* Left - Billing Form */}
       <div className="checkout-section">
-        <h2>Facturation & Expédition</h2>
+        <h2>{t('checkout.billing_shipping')}</h2>
         <div className="checkout-form">
-          <input name="prenom" onChange={handleChange} placeholder="Prénom *" required />
-          <input name="nom" onChange={handleChange} placeholder="Nom *" required />
+          <input name="prenom" onChange={handleChange} placeholder={t('checkout.first_name_placeholder')} required />
+          <input name="nom" onChange={handleChange} placeholder={t('checkout.last_name_placeholder')} required />
           <select name="wilaya" value={form.wilaya} onChange={handleChange} required>
-            <option value="">Sélectionnez une wilaya *</option>
+            <option value="">{t('checkout.select_wilaya_placeholder')}</option>
             {wilayas.map((wilaya) => (
               <option key={wilaya._id} value={wilaya.name}>
                 {wilaya.name}
@@ -198,18 +200,18 @@ const CheckoutPage = () => {
             ))}
           </select>
           <select name="commune" value={form.commune} onChange={handleChange} required disabled={!form.wilaya}>
-            <option value="">Sélectionnez une commune *</option>
+            <option value="">{t('checkout.select_commune_placeholder')}</option>
             {availableCommunes.map((commune, index) => (
               <option key={index} value={commune}>
                 {commune}
               </option>
             ))}
           </select>
-          <input name="adresse" onChange={handleChange} placeholder="Adresse *" required />
-          <input name="telephone" onChange={handleChange} placeholder="Téléphone *" required />
+          <input name="adresse" onChange={handleChange} placeholder={t('checkout.address_placeholder')} required />
+          <input name="telephone" onChange={handleChange} placeholder={t('checkout.phone_placeholder')} required />
           
           <div className="delivery-method-section">
-            <h3>Méthode de livraison</h3>
+            <h3>{t('checkout.delivery_method')}</h3>
             <div className="delivery-method-options">
               <label className="delivery-option">
                 <input
@@ -219,7 +221,7 @@ const CheckoutPage = () => {
                   checked={form.deliveryMethod === "home"}
                   onChange={handleChange}
                 />
-                <span>Livraison à domicile</span>
+                <span>{t('checkout.delivery_home')}</span>
               </label>
               <label className="delivery-option">
                 <input
@@ -229,23 +231,23 @@ const CheckoutPage = () => {
                   checked={form.deliveryMethod === "pickup"}
                   onChange={handleChange}
                 />
-                <span>Retrait au point de collecte</span>
+                <span>{t('checkout.delivery_pickup')}</span>
               </label>
             </div>
           </div>
         </div>
 
-        <h2>Informations complémentaires</h2>
+        <h2>{t('checkout.additional_info')}</h2>
         <textarea
           name="notes"
-          placeholder="Commentaires concernant votre commande..."
+          placeholder={t('checkout.notes_placeholder')}
           onChange={handleChange}
         />
       </div>
 
       {/* Right - Order Summary */}
       <div className="checkout-order-summary">
-        <h3 className="order-section-title">Votre commande</h3>
+        <h3 className="order-section-title">{t('checkout.your_order')}</h3>
 
         {products.map((product) => {
           const quantity = cartItems[product.id];
@@ -261,27 +263,27 @@ const CheckoutPage = () => {
         })}
 
         <div className="order-subtotal">
-          <span>Sous-total produits</span>
+          <span>{t('checkout.subtotal_products')}</span>
           <span>{totalAmount.toFixed(2)} د.ج</span>
         </div>
         <div className="order-shipping">
-          <span>Frais de livraison</span>
+          <span>{t('checkout.shipping_fee')}</span>
           <span>
-            {deliveryLoading ? "Calcul..." : 
+            {deliveryLoading ? t('checkout.calculating') : 
              deliveryFee > 0 ? `${deliveryFee.toFixed(2)} د.ج` : 
-             form.wilaya && form.commune ? "Gratuit" : "À calculer"}
+             form.wilaya && form.commune ? t('cart.shipping_free') : t('checkout.to_calculate')}
           </span>
         </div>
         <div className="order-total">
-          <span><strong>Total</strong></span>
+          <span><strong>{t('cart.total')}</strong></span>
           <span><strong>{finalTotal.toFixed(2)} د.ج</strong></span>
         </div>
 
         <div className="checkout-note">
-          <strong>Méthode de paiement</strong><br />
-          Paiement à la livraison<br />
-          Payer en argent comptant à la livraison.<br /><br />
-          Vos données personnelles seront utilisées pour le traitement de votre commande.
+          <strong>{t('checkout.payment_method_title')}</strong><br />
+          {t('checkout.cod_title')}<br />
+          {t('checkout.cod_desc')}<br /><br />
+          {t('checkout.privacy_notice')}
         </div>
 
         <button
@@ -289,7 +291,7 @@ const CheckoutPage = () => {
           onClick={handleOrder}
           disabled={loading}
         >
-          {loading ? "Envoi en cours..." : "Commander"}
+          {loading ? t('checkout.sending') : t('checkout.place_order')}
         </button>
       </div>
     </div>

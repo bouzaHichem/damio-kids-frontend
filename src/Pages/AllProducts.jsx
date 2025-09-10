@@ -5,6 +5,7 @@ import ProductGrid from '../Components/ProductGrid/ProductGrid';
 import { backend_url } from '../App';
 import axios from 'axios';
 import './CSS/AllProducts.css';
+import { useI18n } from '../utils/i18n';
 
 const AllProducts = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -17,6 +18,8 @@ const AllProducts = () => {
   const [pagination, setPagination] = useState(null);
   const [filterOptions, setFilterOptions] = useState({});
   const [viewMode, setViewMode] = useState('grid');
+  
+  const { t } = useI18n();
   
   // Search and filter state
   const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '');
@@ -223,19 +226,19 @@ const AllProducts = () => {
           <div className="header-content">
             <div className="breadcrumb">
               <button onClick={() => navigate('/')} className="breadcrumb-link">
-                Home
+                {t('nav.home')}
               </button>
               <span className="breadcrumb-separator">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
                   <polyline points="9,18 15,12 9,6"></polyline>
                 </svg>
               </span>
-              <span className="breadcrumb-current">All Products</span>
+              <span className="breadcrumb-current">{t('nav.all_products')}</span>
             </div>
             
             <div className="header-info">
-              <h1>All Products</h1>
-              <p>Discover our complete collection of premium kids fashion</p>
+              <h1>{t('all_products.title')}</h1>
+              <p>{t('all_products.tagline')}</p>
             </div>
           </div>
         </div>
@@ -282,7 +285,7 @@ const AllProducts = () => {
                 </div>
                 <div className="stat-content">
                   <div className="stat-number">{pagination?.totalProducts || 0}+</div>
-                  <div className="stat-label">Products</div>
+                  <div className="stat-label">{t('home.stats.products_label')}</div>
                 </div>
               </div>
               
@@ -294,7 +297,7 @@ const AllProducts = () => {
                 </div>
                 <div className="stat-content">
                   <div className="stat-number">100%</div>
-                  <div className="stat-label">Quality</div>
+                  <div className="stat-label">{t('home.stats.quality_label')}</div>
                 </div>
               </div>
               
@@ -306,8 +309,8 @@ const AllProducts = () => {
                   </svg>
                 </div>
                 <div className="stat-content">
-                  <div className="stat-number">Fast</div>
-                  <div className="stat-label">Delivery</div>
+                  <div className="stat-number">{t('home.stats.fast')}</div>
+                  <div className="stat-label">{t('home.stats.delivery_label')}</div>
                 </div>
               </div>
               
@@ -320,7 +323,7 @@ const AllProducts = () => {
                 </div>
                 <div className="stat-content">
                   <div className="stat-number">24/7</div>
-                  <div className="stat-label">Support</div>
+                  <div className="stat-label">{t('misc.support')}</div>
                 </div>
               </div>
             </div>

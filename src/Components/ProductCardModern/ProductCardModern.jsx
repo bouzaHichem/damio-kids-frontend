@@ -4,10 +4,12 @@ import { motion } from 'framer-motion';
 import { ShopContext } from '../../Context/ShopContext';
 import { getImageUrl } from '../../utils/imageUtils';
 import { useNavigate } from 'react-router-dom';
+import { useI18n } from '../../utils/i18n';
 
 const ProductCardModern = ({ product }) => {
   const navigate = useNavigate();
   const { addToCart } = useContext(ShopContext);
+  const { t } = useI18n();
   const [wish, setWish] = useState(false);
 
   const id = product?.id ?? product?._id;
@@ -44,7 +46,7 @@ const ProductCardModern = ({ product }) => {
         {hasDiscount && <span className="pcard-badge">-{discountPct}%</span>}
         <img src={getImageUrl(image)} alt={name} loading="lazy" onError={(e)=>{e.currentTarget.src='/api/placeholder/600/400'}} />
         <div className="pcard-actions" role="group" aria-label="Quick actions">
-          <button className="pcard-btn" onClick={() => addToCart(id)} aria-label="Add to cart">Add to Cart</button>
+          <button className="pcard-btn" onClick={() => addToCart(id)} aria-label={t('action.add_to_cart')}>{t('action.add_to_cart')}</button>
           <button className="pcard-icon" aria-pressed={wish} onClick={onWishlist} aria-label="Toggle wishlist">❤</button>
           <button className="pcard-icon" onClick={() => navigate(`/product/${id}`)} aria-label="Quick view">👁</button>
         </div>

@@ -4,6 +4,7 @@ import { backend_url } from '../App';
 import { productService } from '../services/apiService';
 import Item from '../Components/Item/Item';
 import './CSS/ShopCategory.css';
+import { useI18n } from '../utils/i18n';
 
 const slugify = (str = '') =>
   (str || '')
@@ -17,6 +18,7 @@ const slugify = (str = '') =>
     .replace(/^-|-$/g, '');
 
 const SubcategoryPage = () => {
+  const { t } = useI18n();
   const { category, subcategory } = useParams();
   const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
@@ -64,7 +66,7 @@ const SubcategoryPage = () => {
   if (loading) {
     return (
       <div className="shopcategory">
-        <div className="shopcategory-indexSort" style={{justifyContent:'center'}}>Loading...</div>
+        <div className="shopcategory-indexSort" style={{justifyContent:'center'}}>{t('loading.generic')}</div>
       </div>
     );
   }
@@ -73,7 +75,7 @@ const SubcategoryPage = () => {
     return (
       <div className="shopcategory">
         <div className="shopcategory-indexSort" style={{justifyContent:'center'}}>
-          Subcategory not found
+          {t('category.subcategory_not_found')}
         </div>
       </div>
     );
@@ -83,9 +85,9 @@ const SubcategoryPage = () => {
     <div className="shopcategory">
       <div className="shopcategory-indexSort">
         <p>
-          <span>{active.cat.name} / {active.sub.name}</span> — {filtered.length} products
+          <span>{active.cat.name} / {active.sub.name}</span> — {filtered.length} {t('home.stats.products_label')}
         </p>
-        <button className="shopcategory-sort" onClick={() => navigate(`/${slugify(active.cat.name)}`)}>Back to {active.cat.name}</button>
+        <button className="shopcategory-sort" onClick={() => navigate(`/${slugify(active.cat.name)}`)}>{t('category.back_to', { name: active.cat.name })}</button>
       </div>
       <div className="shopcategory-products">
         {filtered.map((item,i) => (

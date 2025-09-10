@@ -1,8 +1,13 @@
 {
   "nav.shop": "Boutique",
   "nav.all_products": "Tous les produits",
+  "nav.about": "À propos",
+  "nav.cart": "Panier",
+  "nav.account": "Mon compte",
+
   "account.login": "Se connecter",
   "account.logout": "Se déconnecter",
+
   "loading.generic": "Chargement...",
 
   "home.shop_by_category": "Acheter par catégorie",
@@ -11,6 +16,79 @@
   "home.new_in": "Nouveautés",
   "home.bestsellers": "Meilleures ventes",
   "home.eco_fabrics": "Tissus éco",
-  "home.view_all_new": "Voir toutes les nouveautés"
+  "home.view_all_new": "Voir toutes les nouveautés",
+  "home.hero_title": "Jouer. Briller. Recommencer.",
+  "home.hero_subtitle": "Des tenues qui suivent les aventures des petits — confortables, colorées et faites pour durer.",
+  "home.featured_products": "Produits à la une",
+  "home.promo_products": "Produits en promotion",
+  "home.best_selling_products": "Meilleures ventes",
+  "home.collections": "Collections",
+  "home.stats.products_label": "Produits",
+  "home.stats.quality_label": "Qualité",
+  "home.stats.delivery_label": "Livraison",
+  "home.stats.fast": "Rapide",
+
+  "category.boys": "Garçon",
+  "category.girls": "Fille",
+  "category.babies": "Bébé",
+
+  "action.view_all": "Tout voir",
+  "action.add_to_cart": "Ajouter au panier",
+  "action.apply": "Appliquer",
+
+  "cart.title": "Panier d'achat",
+  "cart.empty": "Votre panier est vide",
+  "cart.empty_subtitle": "Ajoutez vos produits préférés et ils apparaîtront ici.",
+  "cart.subtotal": "Sous-total",
+  "cart.shipping": "Livraison",
+  "cart.shipping_free": "Gratuit",
+  "cart.total": "Total",
+  "cart.continue_shopping": "Continuer vos achats",
+  "cart.promo_code": "Code promo",
+  "cart.promo_placeholder": "Entrez le code",
+  "cart.proceed_to_checkout": "Procéder au paiement",
+  "cart.start_shopping": "Commencer vos achats",
+
+  "checkout.title": "Paiement",
+  "checkout.order_summary": "Récapitulatif de commande",
+
+  "footer.brand_name": "Damio Kids",
+  "footer.description": "Des vêtements pour enfants de qualité pour toutes les occasions. Le confort rencontre le style dans notre collection.",
+  "footer.shop_links": "Liens boutique",
+  "footer.customer_service": "Service client",
+  "footer.store_location": "Magasin",
+  "footer.get_directions": "Itinéraire",
+  "footer.follow_us": "Suivez-nous",
+  "footer.newsletter": "Newsletter",
+  "footer.stay_updated": "Restez informé",
+  "footer.newsletter_cta": "Abonnez-vous pour recevoir des offres spéciales et des mises à jour !",
+  "footer.newsletter_placeholder": "Entrez votre e-mail",
+  "footer.subscribe": "S'abonner",
+  "footer.privacy_policy": "Politique de confidentialité",
+  "footer.terms_of_service": "Conditions d'utilisation",
+  "footer.contact_us": "Contactez-nous",
+  "footer.copyright": "© {year} Damio Kids. Tous droits réservés.",
+
+  "shop.collection_heading": "Notre collection",
+
+  "filter.sort_by": "Trier par :",
+  "filter.sort.newest": "Plus récents",
+  "filter.sort.popular": "Les plus populaires",
+  "filter.sort.price_low": "Prix : du plus bas au plus élevé",
+  "filter.sort.price_high": "Prix : du plus élevé au plus bas",
+  "filter.clear_filters": "Réinitialiser les filtres",
+  "filter.price_range": "Plage de prix",
+
+  "search.no_results": "Aucun produit trouvé",
+  "search.results_count": "{count} résultats trouvés",
+  "search.try_adjusting": "Essayez d’ajuster vos filtres ou parcourez toutes les catégories",
+  "search.browse_all_products": "Voir tous les produits",
+
+  "home.feature_fast_delivery.title": "Livraison express",
+  "home.feature_fast_delivery.desc": "Pensée pour les clients les plus exigeants, partout en Algérie.",
+  "home.feature_quality.title": "Une promesse d’excellence",
+  "home.feature_quality.desc": "La qualité de nos produits est inégalée.",
+  "home.feature_cod.title": "Achetez sans stress",
+  "home.feature_cod.desc": "Vous ne payez qu’une fois votre commande livrée."
 }
 

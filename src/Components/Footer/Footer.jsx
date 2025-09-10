@@ -1,5 +1,6 @@
 import React from 'react';
 import './Footer.css';
+import { useI18n } from '../../utils/i18n';
 
 // import footer_logo from '../Assets/logo_big.png'; // File not found
 import instagram_icon from '../Assets/instagram_icon.png';
@@ -7,6 +8,7 @@ import instagram_icon from '../Assets/instagram_icon.png';
 // import whatsapp_icon from '../Assets/whatsapp_icon.png'; // Not used
 
 const Footer = () => {
+  const { t } = useI18n();
   return (
     <footer className='footer'>
       <div className="footer-container">
@@ -14,41 +16,41 @@ const Footer = () => {
           {/* Brand Section */}
           <div className="footer-brand">
             <div className="footer-logo">
-              <h3>Damio Kids</h3>
+              <h3>{t('footer.brand_name')}</h3>
             </div>
             <p className="footer-description">
-              Quality children's clothing for every occasion. Comfort meets style in our curated collection.
+              {t('footer.description')}
             </p>
           </div>
 
           {/* Navigation Links */}
           <div className="footer-links">
             <div className="link-column">
-              <h4>Shop Links</h4>
+              <h4>{t('footer.shop_links')}</h4>
               <ul>
-                <li><a href="/products">All Products</a></li>
-                <li><a href="/garcon">Boys</a></li>
-                <li><a href="/fille">Girls</a></li>
-                <li><a href="/bébé">Baby</a></li>
-                <li><a href="/about">About Us</a></li>
+                <li><a href="/products">{t('nav.all_products')}</a></li>
+                <li><a href="/garcon">{t('category.boys')}</a></li>
+                <li><a href="/fille">{t('category.girls')}</a></li>
+                <li><a href="/bébé">{t('category.babies')}</a></li>
+                <li><a href="/about">{t('nav.about')}</a></li>
               </ul>
             </div>
             <div className="link-column">
-              <h4>Customer Service</h4>
+              <h4>{t('footer.customer_service')}</h4>
               <ul>
-                <li><a href="/contact">Contact Us</a></li>
-                <li><a href="/cart">Shopping Cart</a></li>
-                <li><a href="/login">Account</a></li>
-                <li><a href="/checkout">Checkout</a></li>
-                <li><a href="/privacy-policy">Privacy Policy</a></li>
-                <li><a href="/terms-of-service">Terms of Service</a></li>
+                <li><a href="/contact">{t('footer.contact_us')}</a></li>
+                <li><a href="/cart">{t('nav.cart')}</a></li>
+                <li><a href="/login">{t('nav.account')}</a></li>
+                <li><a href="/checkout">{t('checkout.title')}</a></li>
+                <li><a href="/privacy-policy">{t('footer.privacy_policy')}</a></li>
+                <li><a href="/terms-of-service">{t('footer.terms_of_service')}</a></li>
               </ul>
             </div>
           </div>
 
           {/* Store Location */}
           <div className="footer-location">
-            <h4>Store Location</h4>
+            <h4>{t('footer.store_location')}</h4>
             <div className="location-info">
               <div className="location-icon">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
@@ -59,7 +61,7 @@ const Footer = () => {
                 <p>nouvelle ville UV17</p>
                 <p>Constantine, Algeria 25000</p>
                 <a href="https://maps.app.goo.gl/aCJsgkkwv6URihRK9" target="_blank" rel="noopener noreferrer" className="directions-link">
-                  Get Directions
+                  {t('footer.get_directions')}
                 </a>
               </div>
             </div>
@@ -67,18 +69,18 @@ const Footer = () => {
 
           {/* Newsletter */}
           <div className="footer-newsletter">
-            <h4>Stay Updated</h4>
-            <p>Subscribe to get special offers and updates!</p>
+            <h4>{t('footer.stay_updated')}</h4>
+            <p>{t('footer.newsletter_cta')}</p>
             <div className="newsletter-form">
-              <input type="email" placeholder="Enter your email" />
-              <button type="submit">Subscribe</button>
+              <input type="email" placeholder={t('footer.newsletter_placeholder')} />
+              <button type="submit">{t('footer.subscribe')}</button>
             </div>
           </div>
         </div>
 
         {/* Social Media Icons */}
         <div className="footer-social">
-          <h4>Follow Us</h4>
+          <h4>{t('footer.follow_us')}</h4>
           <div className="footer-social-icons">
             <a href="https://www.instagram.com/damio.kids?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" rel="noopener noreferrer" className="social-link">
               <img src={instagram_icon} alt="Instagram" />
@@ -99,11 +101,11 @@ const Footer = () => {
         {/* Copyright */}
         <div className="footer-bottom">
           <div className="footer-copyright">
-            <p>&copy; 2025 Damio Kids. All Rights Reserved.</p>
+            <p>{t('footer.copyright', { year: new Date().getFullYear() })}</p>
             <div className="footer-legal">
-              <a href="/privacy-policy">Privacy Policy</a>
+              <a href="/privacy-policy">{t('footer.privacy_policy')}</a>
               <span>•</span>
-              <a href="/terms-of-service">Terms of Service</a>
+              <a href="/terms-of-service">{t('footer.terms_of_service')}</a>
             </div>
           </div>
         </div>

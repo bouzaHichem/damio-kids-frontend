@@ -204,8 +204,8 @@ const Shop = () => {
         <div className="loom-ribbon ribbon-b" aria-hidden></div>
 
         <div className="hero-content">
-          <h1 className="hero-title">Play. Shine. Repeat.</h1>
-          <p className="hero-subtitle">Outfits that keep up with little adventures — comfy, colorful, and crafted to last.</p>
+          <h1 className="hero-title">{t('home.hero_title')}</h1>
+          <p className="hero-subtitle">{t('home.hero_subtitle')}</p>
 
           <div className="hero-chips">
             <span className="chip">{t('home.new_in')}</span>
@@ -221,15 +221,15 @@ const Shop = () => {
           <div className="hero-stats">
             <div className="stat">
               <span className="stat-number">{products.length}+</span>
-              <span className="stat-label">Products</span>
+              <span className="stat-label">{t('home.stats.products_label')}</span>
             </div>
             <div className="stat">
               <span className="stat-number">100%</span>
-              <span className="stat-label">Quality</span>
+              <span className="stat-label">{t('home.stats.quality_label')}</span>
             </div>
             <div className="stat">
-              <span className="stat-number">Fast</span>
-              <span className="stat-label">Delivery</span>
+              <span className="stat-number">{t('home.stats.fast')}</span>
+              <span className="stat-label">{t('home.stats.delivery_label')}</span>
             </div>
           </div>
         </div>
@@ -245,7 +245,7 @@ const Shop = () => {
         <div className="container chips-row">
           {categories.map(c => (
             <button key={c.id} className={`chip chip-link ${selectedCategory === c.id ? 'active' : ''}`} onClick={() => handleCategoryNavigation(c.id)}>
-              <span className="dot" /> {c.name}
+              <span className="dot" /> {(c.id === 'all') ? t('nav.all_products') : (c.id === 'fille') ? t('category.girls') : (c.id === 'garcon') ? t('category.boys') : (c.id === 'bébé') ? t('category.babies') : c.name}
             </button>
           ))}
         </div>
@@ -285,14 +285,14 @@ const Shop = () => {
       </section>
 
       {/* Dynamic Product Sections replacing Shop by Category */}
-      <ProductSection title="Featured Products" products={featured.items} loading={featured.status==='loading'} error={featured.error} />
-      <ProductSection title="Promo Products" products={promo.items} loading={promo.status==='loading'} error={promo.error} />
-      <ProductSection title="Best-Selling Products" products={bestSelling.items} loading={bestSelling.status==='loading'} error={bestSelling.error} />
+      <ProductSection title={t('home.featured_products')} products={featured.items} loading={featured.status==='loading'} error={featured.error} />
+      <ProductSection title={t('home.promo_products')} products={promo.items} loading={promo.status==='loading'} error={promo.error} />
+      <ProductSection title={t('home.best_selling_products')} products={bestSelling.items} loading={bestSelling.status==='loading'} error={bestSelling.error} />
 
       {/* Collections Section */}
       <section className="collections-section">
         <div className="container">
-          <h2 className="section-title">Collections</h2>
+          <h2 className="section-title">{t('home.collections')}</h2>
           <div className="collections-grid">
             {collections.map(collection => (
               <div key={collection._id} className="collection-card">
@@ -340,7 +340,7 @@ const Shop = () => {
                             className="mini-add-btn"
                             onClick={() => addToCart(id)}
                           >
-                            Add to Cart
+                            {t('action.add_to_cart')}
                           </button>
                         </div>
                       );
@@ -350,7 +350,7 @@ const Shop = () => {
                     className="view-all-btn"
                     onClick={() => navigate(`/collections/${collection._id}`)}
                   >
-                    View All
+                    {t('action.view_all')}
                   </button>
                 </div>
               </div>
@@ -365,21 +365,21 @@ const Shop = () => {
           {/* Filter Bar */}
           <div className="filter-bar">
             <div className="filter-left">
-              <h3>Our Collection</h3>
-              <p>{filteredProducts.length} products found</p>
+              <h3>{t('shop.collection_heading')}</h3>
+              <p>{t('search.results_count', { count: filteredProducts.length })}</p>
             </div>
             <div className="filter-right">
               <div className="filter-group">
-                <label>Sort by:</label>
+                <label>{t('filter.sort_by')}</label>
                 <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
-                  <option value="newest">Newest First</option>
-                  <option value="popular">Most Popular</option>
-                  <option value="price-low">Price: Low to High</option>
-                  <option value="price-high">Price: High to Low</option>
+                  <option value="newest">{t('filter.sort.newest')}</option>
+                  <option value="popular">{t('filter.sort.popular')}</option>
+                  <option value="price-low">{t('filter.sort.price_low')}</option>
+                  <option value="price-high">{t('filter.sort.price_high')}</option>
                 </select>
               </div>
               <button className="clear-filters" onClick={clearFilters}>
-                Clear Filters
+                {t('filter.clear_filters')}
               </button>
             </div>
           </div>
@@ -387,7 +387,7 @@ const Shop = () => {
           {/* Advanced Filters */}
           <div className="advanced-filters">
             <div className="filter-section">
-              <h4>Size</h4>
+              <h4>{t('product.size')}</h4>
               <div className="size-filters">
                 {availableSizes.map(size => (
                   <button
@@ -404,7 +404,7 @@ const Shop = () => {
             </div>
             
             <div className="filter-section">
-              <h4>Price Range</h4>
+              <h4>{t('filter.price_range')}</h4>
               <div className="price-range">
                 <input
                   type="range"
@@ -438,10 +438,10 @@ const Shop = () => {
             ) : (
               <div className="no-products">
                 <div className="no-products-content">
-                  <h3>No products found</h3>
-                  <p>Try adjusting your filters or browse all categories</p>
+                  <h3>{t('search.no_results')}</h3>
+                  <p>{t('search.try_adjusting')}</p>
                   <button onClick={clearFilters} className="browse-all-btn">
-                    Browse All Products
+                    {t('search.browse_all_products')}
                   </button>
                 </div>
               </div>
@@ -460,8 +460,8 @@ const Shop = () => {
                   <path d="M3 7v4a4 4 0 0 0 4 4h2m2-6V9a4 4 0 0 1 4-4h2m-6 15v-6a4 4 0 0 1 4-4h2" />
                 </svg>
               </div>
-              <h3>Une livraison express</h3>
-              <p>pensée pour les clients les plus exigeants, partout en Algérie.</p>
+              <h3>{t('home.feature_fast_delivery.title')}</h3>
+              <p>{t('home.feature_fast_delivery.desc')}</p>
             </div>
             <div className="feature-card">
               <div className="feature-icon">
@@ -470,8 +470,8 @@ const Shop = () => {
                   <path d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z" />
                 </svg>
               </div>
-              <h3>Une promesse d’excellence</h3>
-              <p>la qualité de nos produits est inégalée</p>
+              <h3>{t('home.feature_quality.title')}</h3>
+              <p>{t('home.feature_quality.desc')}</p>
             </div>
             <div className="feature-card">
               <div className="feature-icon">
@@ -479,8 +479,8 @@ const Shop = () => {
                   <path d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 0v10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" />
                 </svg>
               </div>
-              <h3>Achetez sans stress </h3>
-              <p>vous ne payez qu’une fois votre commande livrée</p>
+              <h3>{t('home.feature_cod.title')}</h3>
+              <p>{t('home.feature_cod.desc')}</p>
             </div>
           </div>
         </div>
