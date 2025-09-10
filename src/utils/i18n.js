@@ -218,9 +218,11 @@ export const DEFAULT_TRANSLATIONS = {
 class TranslationLoader {
   constructor() {
     this.translations = {
+      // Always keep English defaults available for fallback
       en: DEFAULT_TRANSLATIONS
     };
-    this.loadedLanguages = new Set(['en']);
+    // Do NOT mark any language as pre-loaded so we fetch even for 'en'
+    this.loadedLanguages = new Set();
     this.loadingPromises = new Map();
   }
   
@@ -238,10 +240,12 @@ class TranslationLoader {
     this.loadingPromises.set(languageCode, loadPromise);
     
     try {
-      const translations = await loadPromise;
-      this.translations[languageCode] = translations;
+      const fileTranslations = await loadPromise;
+      // Merge the loaded file with English defaults so missing keys still work
+      const merged = { ...DEFAULT_TRANSLATIONS, ...(fileTranslations || {}) };
+      this.translations[languageCode] = merged;
       this.loadedLanguages.add(languageCode);
-      return translations;
+      return merged;
     } catch (error) {
       console.error(`Failed to load translations for ${languageCode}:`, error);
       // Fallback to English
@@ -274,12 +278,13 @@ class TranslationLoader {
   }
   
   getTranslation(languageCode, key, params = {}) {
-    const translations = this.translations[languageCode] || this.translations.en;
-    let translation = translations[key] || key;
+    // Prefer current language, then fall back to English defaults, then the key
+    const langTranslations = this.translations[languageCode] || {};
+    let translation = langTranslations[key] ?? DEFAULT_TRANSLATIONS[key] ?? key;
     
     // Replace parameters in translation
     Object.keys(params).forEach(param => {
-      translation = translation.replace(`{${param}}`, params[param]);
+      translation = String(translation).replace(`{${param}}`, params[param]);
     });
     
     return translation;
@@ -346,11 +351,18 @@ export const I18nProvider = ({ children }) => {
     direction: SUPPORTED_LANGUAGES[detectLanguage()]?.direction || 'ltr'
   });
   
-  useEffect(() => {
+useEffect(() => {
     // Apply direction to document
     document.dir = state.direction;
     document.documentElement.lang = state.currentLanguage;
   }, [state.direction, state.currentLanguage]);
+
+  // Load translations for the initial language on mount
+  useEffect(() => {
+    // Fire and forget; internal state updates will re-render
+    changeLanguage(state.currentLanguage);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   
   const changeLanguage = async (languageCode) => {
     if (!SUPPORTED_LANGUAGES[languageCode]) {
