@@ -102,6 +102,9 @@ const Footer = () => {
         <div className="footer-bottom">
           <div className="footer-copyright">
             <p>{t('footer.copyright', { year: new Date().getFullYear() })}</p>
+            <div className="footer-signature">
+              by <a href="https://www.instagram.com/h_ichem/" target="_blank" rel="noopener noreferrer">hichem</a>
+            </div>
             <div className="footer-legal">
               <a href="/privacy-policy">{t('footer.privacy_policy')}</a>
               <span>•</span>

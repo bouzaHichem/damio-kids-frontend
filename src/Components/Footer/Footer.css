@@ -149,6 +149,21 @@ footer {
     color: var(--primary-color);
 }
 
+/* Signature under copyright */
+.footer-signature {
+    margin-top: 6px;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+.footer-signature a {
+    color: var(--primary-color);
+    font-weight: 700;
+}
+.footer-signature a:hover {
+    color: var(--primary-hover);
+    text-decoration: underline;
+}
+
 .footer-location {
     flex: 1 0 200px;
     text-align: left;
