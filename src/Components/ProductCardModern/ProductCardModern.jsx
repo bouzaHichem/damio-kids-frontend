@@ -6,7 +6,7 @@ import { getImageUrl } from '../../utils/imageUtils';
 import { useNavigate } from 'react-router-dom';
 import { useI18n } from '../../utils/i18n';
 
-const ProductCardModern = ({ product }) => {
+const ProductCardModern = ({ product, trending = false }) => {
   const navigate = useNavigate();
   const { addToCart } = useContext(ShopContext);
   const { t } = useI18n();
@@ -44,6 +44,7 @@ const ProductCardModern = ({ product }) => {
     >
       <div className="pcard-media">
         {hasDiscount && <span className="pcard-badge">-{discountPct}%</span>}
+        {trending && <span className="pcard-badge trend">🔥 {t('home.trending')}</span>}
         <img src={getImageUrl(image)} alt={name} loading="lazy" onError={(e)=>{e.currentTarget.src='/api/placeholder/600/400'}} />
         <div className="pcard-actions" role="group" aria-label="Quick actions">
           <button className="pcard-btn" onClick={() => addToCart(id)} aria-label={t('action.add_to_cart')}>{t('action.add_to_cart')}</button>
