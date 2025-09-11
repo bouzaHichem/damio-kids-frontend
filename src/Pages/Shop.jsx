@@ -306,9 +306,30 @@ const Shop = () => {
       </section>
 
       {/* Dynamic Product Sections replacing Shop by Category */}
-      <ProductSection variant="featured" title={t('home.featured_products')} subtitle={t('home.trending')} products={featured.items} loading={featured.status==='loading'} error={featured.error} />
-      <ProductSection variant="promo" title={t('home.promo_products')} subtitle={t('action.view_all')} products={promo.items} loading={promo.status==='loading'} error={promo.error} />
-      <ProductSection variant="best" title={t('home.best_selling_products')} subtitle={t('home.trending')} products={bestSelling.items} loading={bestSelling.status==='loading'} error={bestSelling.error} />
+      <ProductSection
+        variant="featured"
+        title={t('home.featured_products')}
+        subtitle="Our hand-picked favorites this week"
+        products={featured.items}
+        loading={featured.status==='loading'}
+        error={featured.error}
+      />
+      <ProductSection
+        variant="promo"
+        title={t('home.promo_products')}
+        subtitle="Grab them before they're gone!"
+        products={promo.items}
+        loading={promo.status==='loading'}
+        error={promo.error}
+      />
+      <ProductSection
+        variant="best"
+        title={t('home.best_selling_products')}
+        subtitle="Top choices loved by our customers"
+        products={bestSelling.items}
+        loading={bestSelling.status==='loading'}
+        error={bestSelling.error}
+      />
 
       {/* Collections Section */}
       <section className="collections-section">
