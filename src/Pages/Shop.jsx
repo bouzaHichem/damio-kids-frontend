@@ -91,6 +91,17 @@ const Shop = () => {
     }
   }
 
+  // Wishlist toggle stored locally for now
+  const toggleWishlist = (id) => {
+    try {
+      const key = 'wishlist'
+      const current = JSON.parse(localStorage.getItem(key) || '[]')
+      const exists = current.includes(id)
+      const next = exists ? current.filter(x => x !== id) : [...current, id]
+      localStorage.setItem(key, JSON.stringify(next))
+    } catch {}
+  }
+
   // Get category image
   const getCategoryImage = (categoryName) => {
     const categoryImage = shopImages.category.find(img => 
@@ -263,19 +274,29 @@ const Shop = () => {
               const now = Date.now();
               const recencyMs = 1000 * 60 * 60 * 24 * 30; // 30 days
               const list = (products || []).filter(p => p?.newCollection || p?.isNew || (p?.date && (now - new Date(p.date).getTime() < recencyMs))).slice(0, 8);
-              return list.map((p, i) => (
-                <div className="new-card reveal" style={{['--d']: `${i * 40}ms`}} key={p.id || i}>
-                  <div className="new-badge">{t('home.new_in')}</div>
-                  <div className="new-media">
-                    <img src={getImageUrl(p.image)} alt={p.name} loading="lazy" onError={(e) => { e.target.src = '/api/placeholder/600/400'}} />
+              return list.map((p, i) => {
+                const id = p.id ?? p._id ?? i;
+                return (
+                  <div className="new-card reveal" style={{['--d']: `${i * 40}ms`}} key={id}>
+                    <div className="new-badge">{t('home.new_in')}</div>
+                    <div className="new-media">
+                      <img src={getImageUrl(p.image)} alt={p.name} loading="lazy" onError={(e) => { e.target.src = '/api/placeholder/600/400'}} />
+                      <div className="new-overlay" aria-hidden>
+                        <div className="new-actions" role="group" aria-label="Quick actions">
+                          <button className="new-btn primary" onClick={() => addToCart(id)}>{t('action.add_to_cart')}</button>
+                          <button className="new-btn icon" onClick={() => toggleWishlist(id)} aria-label="Wishlist">❤</button>
+                          <button className="new-btn icon" onClick={() => navigate(`/product/${id}`)} aria-label="Quick view">👁</button>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="new-info">
+                      <h3 className="new-title">{p.name}</h3>
+                      <p className="new-desc">{p.description || ' '}</p>
+                      <div className="new-price">{p.new_price}<span className="cur"> د.ج</span></div>
+                    </div>
                   </div>
-                  <div className="new-info">
-                    <h3 className="new-title">{p.name}</h3>
-                    <p className="new-desc">{p.description || ' '}</p>
-                    <div className="new-price">{p.new_price}<span className="cur"> د.ج</span></div>
-                  </div>
-                </div>
-              ));
+                );
+              });
             })()}
           </div>
           <div className="new-cta">
