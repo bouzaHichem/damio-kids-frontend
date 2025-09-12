@@ -89,6 +89,15 @@
   "home.feature_quality.title": "A Promise of Excellence",
   "home.feature_quality.desc": "Our product quality is unmatched.",
   "home.feature_cod.title": "Shop Without Stress",
-  "home.feature_cod.desc": "You pay only once your order is delivered."
+  "home.feature_cod.desc": "You pay only once your order is delivered.",
+
+  "all_products.title": "All Products",
+  "all_products.tagline": "Discover our complete collection",
+
+  "category.showing_count": "Showing {count} products",
+
+  "action.explore_more": "Explore More",
+
+  "misc.support": "Support"
 }
 

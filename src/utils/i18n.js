@@ -196,10 +196,21 @@ export const DEFAULT_TRANSLATIONS = {
   'home.new_in': 'New in',
   'home.bestsellers': 'Bestsellers',
   'home.eco_fabrics': 'Eco fabrics',
-  'home.view_all_new': 'View All New Products',
+'home.view_all_new': 'View All New Products',
 
+  // All products page
+  'all_products.title': 'All Products',
+  'all_products.tagline': 'Discover our complete collection',
+
+  // Category / counts
+  'category.showing_count': 'Showing {count} products',
+
+  // Actions
+  'action.explore_more': 'Explore More',
+ 
   // Miscellaneous
   'misc.currency': '$',
+  'misc.support': 'Support',
   'misc.and': 'and',
   'misc.or': 'or',
   'misc.yes': 'Yes',

@@ -89,6 +89,15 @@
   "home.feature_quality.title": "وعد بالتميّز",
   "home.feature_quality.desc": "جودة منتجاتنا لا تضاهى.",
   "home.feature_cod.title": "تسوّق بلا قلق",
-  "home.feature_cod.desc": "تدفع فقط عند استلام طلبك."
+  "home.feature_cod.desc": "تدفع فقط عند استلام طلبك.",
+
+  "all_products.title": "كل المنتجات",
+  "all_products.tagline": "اكتشف مجموعتنا الكاملة",
+
+  "category.showing_count": "عرض {count} منتج",
+
+  "action.explore_more": "اكتشف المزيد",
+
+  "misc.support": "الدعم"
 }
 

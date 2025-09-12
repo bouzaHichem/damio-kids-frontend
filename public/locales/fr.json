@@ -89,6 +89,15 @@
   "home.feature_quality.title": "Une promesse d’excellence",
   "home.feature_quality.desc": "La qualité de nos produits est inégalée.",
   "home.feature_cod.title": "Achetez sans stress",
-  "home.feature_cod.desc": "Vous ne payez qu’une fois votre commande livrée."
+  "home.feature_cod.desc": "Vous ne payez qu’une fois votre commande livrée.",
+
+  "all_products.title": "Tous les produits",
+  "all_products.tagline": "Découvrez notre collection complète",
+
+  "category.showing_count": "Affichage de {count} produits",
+
+  "action.explore_more": "Explorer plus",
+
+  "misc.support": "Support"
 }
 
