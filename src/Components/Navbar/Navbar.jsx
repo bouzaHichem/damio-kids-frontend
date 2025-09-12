@@ -146,13 +146,21 @@ const Navbar = () => {
         <img src={logo} alt="logo" />
       </Link>
 
-      {/* Mobile toggle */}
-      <img 
-        onClick={dropdown_toggle} 
-        className='nav-dropdown' 
-        src={nav_dropdown} 
-        alt="menu" 
-      />
+      {/* Mobile center: category/menu toggle (icon) */}
+      <button
+        type="button"
+        className="icon-btn nav-mobile-center"
+        aria-label="Browse categories"
+        title="Browse"
+        onClick={dropdown_toggle}
+      >
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2">
+          <rect x="3" y="3" width="7" height="7" rx="2"></rect>
+          <rect x="14" y="3" width="7" height="7" rx="2"></rect>
+          <rect x="3" y="14" width="7" height="7" rx="2"></rect>
+          <rect x="14" y="14" width="7" height="7" rx="2"></rect>
+        </svg>
+      </button>
 
       <ul ref={menuRef} className="nav-menu">
         {/* Shop Link */}
@@ -247,11 +255,21 @@ const Navbar = () => {
       {/* Cart & Login */}
       <div className="nav-login-cart">
         <LanguageSwitcher className="nav-lang-switch" />
+
+        {/* Icon-only profile for mobile */}
+        <Link to='/login' className="nav-icon-btn profile" aria-label={t('nav.account')} title={t('nav.account')}>
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M12 12c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5z"></path>
+            <path d="M2 21c0-4.418 3.582-8 8-8h4c4.418 0 8 3.582 8 8"></path>
+          </svg>
+        </Link>
+
+        {/* Text buttons for desktop */}
         {localStorage.getItem('auth-token') ? (
           <button 
             onClick={() => {
               localStorage.removeItem('auth-token');
-              window.location.replace("/");
+              window.location.replace('/');
             }}
             className="nav-logout-btn"
           >
@@ -263,7 +281,7 @@ const Navbar = () => {
           </Link>
         )}
 
-        <Link to="/cart" className="nav-cart-link">
+        <Link to="/cart" className="nav-cart-link" aria-label={t('nav.cart')} title={t('nav.cart')}>
           <img src={cart_icon} alt="cart" className="nav-cart-icon" />
           {getTotalCartItems() > 0 && (
             <div className="nav-cart-count">{getTotalCartItems()}</div>
