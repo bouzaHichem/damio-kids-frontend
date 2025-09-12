@@ -310,6 +310,8 @@
 
 /* Icon-only profile button (hidden on desktop) */
 .nav-icon-btn{display:none}
+/* Center browse icon hidden by default (desktop) */
+.nav-mobile-center{display:none}
 
 /* MOBILE MENU */
 @media (max-width: 768px) {
