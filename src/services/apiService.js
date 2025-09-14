@@ -146,6 +146,7 @@ export const productService = {
   },
 
   async searchProducts(params) {
+    // Accepts filters: q, category, subcategories, sizes, ages, colors, brands, tags, minPrice, maxPrice, available, sortBy, sortOrder, page, limit
     const response = await api.get('/products/search', { params });
     return response.data;
   },

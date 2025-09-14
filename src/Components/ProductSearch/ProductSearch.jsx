@@ -14,8 +14,10 @@ const ProductSearch = ({
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [activeFilters, setActiveFilters] = useState({
     category: 'all',
+    subcategories: [],
     priceRange: { min: 0, max: 10000 },
     sizes: [],
+    ages: [],
     colors: [],
     brands: [],
     tags: [],
@@ -43,7 +45,7 @@ const ProductSearch = ({
   const handleFilterChange = (filterType, value) => {
     let newFilters = { ...activeFilters };
 
-    if (filterType === 'sizes' || filterType === 'colors' || filterType === 'brands' || filterType === 'tags') {
+    if (['sizes', 'ages', 'colors', 'brands', 'tags', 'subcategories'].includes(filterType)) {
       const currentArray = newFilters[filterType] || [];
       if (currentArray.includes(value)) {
         newFilters[filterType] = currentArray.filter(item => item !== value);
@@ -52,6 +54,10 @@ const ProductSearch = ({
       }
     } else if (filterType === 'priceRange') {
       newFilters.priceRange = { ...newFilters.priceRange, ...value };
+    } else if (filterType === 'category') {
+      newFilters.category = value;
+      // Reset subcategories when category changes
+      newFilters.subcategories = [];
     } else {
       newFilters[filterType] = value;
     }
@@ -68,8 +74,10 @@ const ProductSearch = ({
   const clearAllFilters = () => {
     const defaultFilters = {
       category: 'all',
+      subcategories: [],
       priceRange: { min: 0, max: 10000 },
       sizes: [],
+      ages: [],
       colors: [],
       brands: [],
       tags: [],
@@ -84,7 +92,9 @@ const ProductSearch = ({
   const getActiveFilterCount = () => {
     let count = 0;
     if (activeFilters.category !== 'all') count++;
+    if (activeFilters.subcategories.length > 0) count++;
     if (activeFilters.sizes.length > 0) count++;
+    if (activeFilters.ages.length > 0) count++;
     if (activeFilters.colors.length > 0) count++;
     if (activeFilters.brands.length > 0) count++;
     if (activeFilters.tags.length > 0) count++;
@@ -172,7 +182,7 @@ const ProductSearch = ({
       {isFilterOpen && (
         <div className="filters-panel">
           <div className="filters-grid">
-            {/* Category Filter */}
+            {/* Category & Subcategory Filter */}
             <div className="filter-group">
               <h4>Category</h4>
               <div className="filter-options">
@@ -199,6 +209,24 @@ const ProductSearch = ({
                   </label>
                 ))}
               </div>
+              {/* Subcategories (multi-select) */}
+              {activeFilters.category !== 'all' && (
+                <div className="subcat-filters">
+                  <h5>Subcategories</h5>
+                  <div className="filter-options">
+                    {filterOptions.categories?.find(c => c.name === activeFilters.category)?.subcategories?.map(sub => (
+                      <label key={sub.id || sub.name} className="filter-option">
+                        <input
+                          type="checkbox"
+                          checked={activeFilters.subcategories.includes(sub.name)}
+                          onChange={() => handleFilterChange('subcategories', sub.name)}
+                        />
+                        {sub.name}
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Price Range Filter */}
@@ -248,6 +276,24 @@ const ProductSearch = ({
                       onClick={() => handleFilterChange('sizes', size)}
                     >
                       {size}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Age Filter */}
+            {filterOptions.ages?.length > 0 && (
+              <div className="filter-group">
+                <h4>Age</h4>
+                <div className="size-filters">
+                  {filterOptions.ages.map(age => (
+                    <button
+                      key={age}
+                      className={`size-btn ${activeFilters.ages.includes(age) ? 'active' : ''}`}
+                      onClick={() => handleFilterChange('ages', age)}
+                    >
+                      {age}
                     </button>
                   ))}
                 </div>

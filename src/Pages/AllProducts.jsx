@@ -25,11 +25,13 @@ const AllProducts = () => {
   const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '');
   const [filters, setFilters] = useState({
     category: searchParams.get('category') || 'all',
+    subcategories: searchParams.get('subcategories')?.split(',').filter(Boolean) || [],
     priceRange: {
       min: parseInt(searchParams.get('minPrice')) || 0,
       max: searchParams.get('maxPrice') ? parseInt(searchParams.get('maxPrice')) : null // do not cap by default
     },
     sizes: searchParams.get('sizes')?.split(',').filter(Boolean) || [],
+    ages: searchParams.get('ages')?.split(',').filter(Boolean) || [],
     colors: searchParams.get('colors')?.split(',').filter(Boolean) || [],
     brands: searchParams.get('brands')?.split(',').filter(Boolean) || [],
     tags: searchParams.get('tags')?.split(',').filter(Boolean) || [],
@@ -44,9 +46,11 @@ const AllProducts = () => {
     
     if (newParams.q) params.set('q', newParams.q);
     if (newParams.category && newParams.category !== 'all') params.set('category', newParams.category);
+    if (newParams.subcategories?.length > 0) params.set('subcategories', newParams.subcategories.join(','));
     if (newParams.minPrice && newParams.minPrice > 0) params.set('minPrice', newParams.minPrice);
     if (newParams.maxPrice !== null && newParams.maxPrice !== undefined) params.set('maxPrice', newParams.maxPrice);
     if (newParams.sizes?.length > 0) params.set('sizes', newParams.sizes.join(','));
+    if (newParams.ages?.length > 0) params.set('ages', newParams.ages.join(','));
     if (newParams.colors?.length > 0) params.set('colors', newParams.colors.join(','));
     if (newParams.brands?.length > 0) params.set('brands', newParams.brands.join(','));
     if (newParams.tags?.length > 0) params.set('tags', newParams.tags.join(','));
@@ -78,12 +82,14 @@ const AllProducts = () => {
       const searchParams = {
         q: params.searchQuery || searchQuery,
         category: params.filters?.category || filters.category,
+        subcategories: (params.filters?.subcategories || filters.subcategories).join(','),
         minPrice: params.filters?.priceRange?.min ?? filters.priceRange.min,
         maxPrice: params.filters?.priceRange?.max ?? filters.priceRange.max,
-        sizes: params.filters?.sizes?.join(',') || filters.sizes.join(','),
-        colors: params.filters?.colors?.join(',') || filters.colors.join(','),
-        brands: params.filters?.brands?.join(',') || filters.brands.join(','),
-        tags: params.filters?.tags?.join(',') || filters.tags.join(','),
+        sizes: (params.filters?.sizes || filters.sizes).join(','),
+        ages: (params.filters?.ages || filters.ages).join(','),
+        colors: (params.filters?.colors || filters.colors).join(','),
+        brands: (params.filters?.brands || filters.brands).join(','),
+        tags: (params.filters?.tags || filters.tags).join(','),
         available: params.filters?.available !== undefined ? params.filters.available : filters.available,
         sortBy: params.sortBy || sortBy,
         sortOrder: 'desc',
@@ -108,9 +114,11 @@ const AllProducts = () => {
         updateUrlParams({
           q: searchParams.q,
           category: searchParams.category,
+          subcategories: params.filters?.subcategories || filters.subcategories,
           minPrice: searchParams.minPrice,
           maxPrice: searchParams.maxPrice,
           sizes: params.filters?.sizes || filters.sizes,
+          ages: params.filters?.ages || filters.ages,
           colors: params.filters?.colors || filters.colors,
           brands: params.filters?.brands || filters.brands,
           tags: params.filters?.tags || filters.tags,
@@ -200,11 +208,13 @@ const AllProducts = () => {
       setSearchQuery(params.get('q') || '');
       setFilters({
         category: params.get('category') || 'all',
+        subcategories: params.get('subcategories')?.split(',').filter(Boolean) || [],
         priceRange: {
           min: parseInt(params.get('minPrice')) || 0,
           max: params.get('maxPrice') ? parseInt(params.get('maxPrice')) : null
         },
         sizes: params.get('sizes')?.split(',').filter(Boolean) || [],
+        ages: params.get('ages')?.split(',').filter(Boolean) || [],
         colors: params.get('colors')?.split(',').filter(Boolean) || [],
         brands: params.get('brands')?.split(',').filter(Boolean) || [],
         tags: params.get('tags')?.split(',').filter(Boolean) || [],
