@@ -168,13 +168,12 @@ const Shop = () => {
   }
 
   const handleCategoryNavigation = (categoryId) => {
+    // Update local selected state for chip highlighting
+    setSelectedCategory(categoryId)
     if (categoryId === 'all') {
       navigate('/')
     } else if (['fille', 'garcon', 'bébé'].includes(categoryId)) {
       navigate(`/${categoryId}`)
-    } else {
-      // For other cases like 'newest', just filter on current page
-      handleCategoryFilter(categoryId)
     }
   }
 
@@ -408,96 +407,6 @@ const Shop = () => {
         </div>
       </section>
 
-      {/* Filters  Products */}
-      <section className="products-section">
-        <div className="container">
-          {/* Filter Bar */}
-          <div className="filter-bar">
-            <div className="filter-left">
-              <h3>{t('shop.collection_heading')}</h3>
-              <p>{t('search.results_count', { count: filteredProducts.length })}</p>
-            </div>
-            <div className="filter-right">
-              <div className="filter-group">
-                <label>{t('filter.sort_by')}</label>
-                <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
-                  <option value="newest">{t('filter.sort.newest')}</option>
-                  <option value="popular">{t('filter.sort.popular')}</option>
-                  <option value="price-low">{t('filter.sort.price_low')}</option>
-                  <option value="price-high">{t('filter.sort.price_high')}</option>
-                </select>
-              </div>
-              <button className="clear-filters" onClick={clearFilters}>
-                {t('filter.clear_filters')}
-              </button>
-            </div>
-          </div>
-
-          {/* Advanced Filters */}
-          <div className="advanced-filters">
-            <div className="filter-section">
-              <h4>{t('product.size')}</h4>
-              <div className="size-filters">
-                {availableSizes.map(size => (
-                  <button
-                    key={size}
-                    className={`size-btn ${
-                      selectedSizes.includes(size) ? 'active' : ''
-                    }`}
-                    onClick={() => handleSizeToggle(size)}
-                  >
-                    {size}
-                  </button>
-                ))}
-              </div>
-            </div>
-            
-            <div className="filter-section">
-              <h4>{t('filter.price_range')}</h4>
-              <div className="price-range">
-                <input
-                  type="range"
-                  min="0"
-                  max="10000"
-                  value={priceRange.max}
-                  onChange={(e) => setPriceRange({...priceRange, max: parseInt(e.target.value)})}
-                  className="range-slider"
-                />
-                <div className="price-display">
-                  {priceRange.min} د.ج - {priceRange.max} د.ج
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Products Grid */}
-          <div className="products-grid">
-            {filteredProducts.length > 0 ? (
-              filteredProducts.map((product, index) => (
-                <Item
-                  key={product.id || index}
-                  id={product.id}
-                  name={product.name}
-                  image={product.image}
-                  new_price={product.new_price}
-                  old_price={product.old_price}
-                  isNew={product.newCollection}
-                />
-              ))
-            ) : (
-              <div className="no-products">
-                <div className="no-products-content">
-                  <h3>{t('search.no_results')}</h3>
-                  <p>{t('search.try_adjusting')}</p>
-                  <button onClick={clearFilters} className="browse-all-btn">
-                    {t('search.browse_all_products')}
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      </section>
 
       {/* Features Section */}
       <section className="features-section">
