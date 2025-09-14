@@ -5,9 +5,9 @@ const initialPagedState = { items: [], status: 'idle', error: null, page: 1, lim
 
 export const fetchFeaturedProducts = createAsyncThunk(
   'productSections/fetchFeatured',
-  async ({ page = 1, limit = 8 } = {}, { rejectWithValue }) => {
+  async ({ page = 1, limit = 8, params = {} } = {}, { rejectWithValue }) => {
     try {
-      const res = await productService.getFeaturedProducts({ page, limit });
+      const res = await productService.getFeaturedProducts({ page, limit, ...params });
       const products = res?.products ?? res?.data ?? res?.items ?? res ?? [];
       const hasMore = !!(res?.hasMore ?? (Array.isArray(products) && products.length === limit));
       return { products, page, limit, hasMore };
@@ -19,9 +19,9 @@ export const fetchFeaturedProducts = createAsyncThunk(
 
 export const fetchPromoProducts = createAsyncThunk(
   'productSections/fetchPromo',
-  async ({ page = 1, limit = 8 } = {}, { rejectWithValue }) => {
+  async ({ page = 1, limit = 8, params = {} } = {}, { rejectWithValue }) => {
     try {
-      const res = await productService.getPromoProducts({ page, limit });
+      const res = await productService.getPromoProducts({ page, limit, ...params });
       const products = res?.products ?? res?.data ?? res?.items ?? res ?? [];
       const hasMore = !!(res?.hasMore ?? (Array.isArray(products) && products.length === limit));
       return { products, page, limit, hasMore };
@@ -33,9 +33,9 @@ export const fetchPromoProducts = createAsyncThunk(
 
 export const fetchBestSellingProducts = createAsyncThunk(
   'productSections/fetchBestSelling',
-  async ({ page = 1, limit = 8 } = {}, { rejectWithValue }) => {
+  async ({ page = 1, limit = 8, params = {} } = {}, { rejectWithValue }) => {
     try {
-      const res = await productService.getBestSellingProducts({ page, limit });
+      const res = await productService.getBestSellingProducts({ page, limit, ...params });
       const products = res?.products ?? res?.data ?? res?.items ?? res ?? [];
       const hasMore = !!(res?.hasMore ?? (Array.isArray(products) && products.length === limit));
       return { products, page, limit, hasMore };

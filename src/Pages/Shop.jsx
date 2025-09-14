@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom'
 import { getImageUrl } from '../utils/imageUtils'
 import { useI18n } from '../utils/i18n'
 import ProductSection from '../Components/ProductSection/ProductSection'
+import ProductSearch from '../Components/ProductSearch/ProductSearch'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchBestSellingProducts, fetchFeaturedProducts, fetchPromoProducts, selectBestSelling, selectFeatured, selectPromo } from '../store/productSectionsSlice'
 
@@ -19,12 +20,23 @@ const Shop = () => {
   const featured = useSelector(selectFeatured)
   const promo = useSelector(selectPromo)
   const bestSelling = useSelector(selectBestSelling)
-  const [filteredProducts, setFilteredProducts] = useState([])
   const [loading, setLoading] = useState(true)
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [sortBy, setSortBy] = useState('newest')
-  const [priceRange, setPriceRange] = useState({ min: 0, max: 10000 })
-  const [selectedSizes, setSelectedSizes] = useState([])
+  // Enhanced search and filters for sections
+  const [searchQuery, setSearchQuery] = useState('')
+  const [filters, setFilters] = useState({
+    category: 'all',
+    subcategories: [],
+    priceRange: { min: 0, max: null },
+    sizes: [],
+    ages: [],
+    colors: [],
+    brands: [],
+    tags: [],
+    available: null,
+  })
+  const [filterOptions, setFilterOptions] = useState({})
   const [shopImages, setShopImages] = useState({
     hero: [],
     category: [],
@@ -44,25 +56,45 @@ const Shop = () => {
   // Sizes available
   const availableSizes = ['XS', 'S', 'M', 'L', 'XL']
 
-  // Fetch shop images and collections
+// Fetch shop images and collections
   useEffect(() => {
     fetchShopImages()
     fetchCollections()
+    fetchFilterOptions()
   }, [])
 
   useEffect(() => {
     if (productsLoaded) {
       setLoading(false)
-      applyFilters()
     }
-  }, [productsLoaded, products, selectedCategory, sortBy, priceRange, selectedSizes])
+  }, [productsLoaded])
 
-  // Load dynamic sections
+  // Build params for section API calls based on filters/search/sort
+  const buildSectionParams = () => {
+    const params = {
+      sortBy,
+    }
+    if (searchQuery) params.q = searchQuery
+    if (filters.category && filters.category !== 'all') params.category = filters.category
+    if (filters.subcategories?.length) params.subcategories = filters.subcategories.join(',')
+    if (filters.sizes?.length) params.sizes = filters.sizes.join(',')
+    if (filters.ages?.length) params.ages = filters.ages.join(',')
+    if (filters.colors?.length) params.colors = filters.colors.join(',')
+    if (filters.brands?.length) params.brands = filters.brands.join(',')
+    if (filters.tags?.length) params.tags = filters.tags.join(',')
+    if (filters.available !== null && filters.available !== undefined) params.available = filters.available
+    if (filters.priceRange?.min !== undefined && filters.priceRange?.min !== null) params.minPrice = filters.priceRange.min
+    if (filters.priceRange?.max !== undefined && filters.priceRange?.max !== null) params.maxPrice = filters.priceRange.max
+    return params
+  }
+
+  // Load dynamic sections whenever filters/sort/search change
   useEffect(() => {
-    dispatch(fetchFeaturedProducts({ page: 1, limit: 8 }))
-    dispatch(fetchPromoProducts({ page: 1, limit: 8 }))
-    dispatch(fetchBestSellingProducts({ page: 1, limit: 8 }))
-  }, [dispatch])
+    const params = buildSectionParams()
+    dispatch(fetchFeaturedProducts({ page: 1, limit: 8, params }))
+    dispatch(fetchPromoProducts({ page: 1, limit: 8, params }))
+    dispatch(fetchBestSellingProducts({ page: 1, limit: 8, params }))
+  }, [dispatch, searchQuery, filters, sortBy])
 
   const fetchShopImages = async () => {
     try {
@@ -77,6 +109,17 @@ const Shop = () => {
       }
     } catch (error) {
       console.error('Error fetching shop images:', error)
+    }
+  }
+
+  const fetchFilterOptions = async () => {
+    try {
+      const response = await axios.get(`${backend_url}/products/filters`)
+      if (response.data.success) {
+        setFilterOptions(response.data.filters)
+      }
+    } catch (error) {
+      console.error('Error fetching filter options:', error)
     }
   }
 
@@ -124,53 +167,6 @@ const Shop = () => {
     }))
   }
 
-  const applyFilters = () => {
-    let filtered = [...products]
-
-    // Category filter
-    if (selectedCategory !== 'all') {
-      filtered = filtered.filter(product => 
-        product.category && product.category.toLowerCase() === selectedCategory.toLowerCase()
-      )
-    }
-
-    // Price filter
-    filtered = filtered.filter(product => 
-      product.new_price >= priceRange.min && product.new_price <= priceRange.max
-    )
-
-    // Size filter
-    if (selectedSizes.length > 0) {
-      filtered = filtered.filter(product => 
-        product.sizes && product.sizes.some(size => selectedSizes.includes(size))
-      )
-    }
-
-    // Sort products
-    switch (sortBy) {
-      case 'price-low':
-        filtered.sort((a, b) => a.new_price - b.new_price)
-        break
-      case 'price-high':
-        filtered.sort((a, b) => b.new_price - a.new_price)
-        break
-      case 'newest':
-        filtered.sort((a, b) => new Date(b.date) - new Date(a.date))
-        break
-      case 'popular':
-        filtered.sort((a, b) => (b.popular ? 1 : 0) - (a.popular ? 1 : 0))
-        break
-      default:
-        break
-    }
-
-    setFilteredProducts(filtered)
-  }
-
-  const handleCategoryFilter = (categoryId) => {
-    setSelectedCategory(categoryId)
-  }
-
   const handleCategoryNavigation = (categoryId) => {
     if (categoryId === 'all') {
       navigate('/')
@@ -182,19 +178,17 @@ const Shop = () => {
     }
   }
 
-  const handleSizeToggle = (size) => {
-    setSelectedSizes(prev => 
-      prev.includes(size) 
-        ? prev.filter(s => s !== size)
-        : [...prev, size]
-    )
+  // Search/Filter/Sort handlers for sections filter
+  const handleSearch = (query) => {
+    setSearchQuery(query)
   }
 
-  const clearFilters = () => {
-    setSelectedCategory('all')
-    setSortBy('newest')
-    setPriceRange({ min: 0, max: 10000 })
-    setSelectedSizes([])
+  const handleFilterChange = (newFilters) => {
+    setFilters(newFilters)
+  }
+
+  const handleSortChange = (newSortBy) => {
+    setSortBy(newSortBy)
   }
 
   if (loading) {
@@ -303,6 +297,19 @@ const Shop = () => {
             <a className="view-all-new" href="/products?sortBy=newest">{t('home.view_all_new')}</a>
           </div>
         </div>
+      </section>
+
+      {/* Filters for sections */}
+      <section className="home-filters container">
+        <ProductSearch
+          onSearch={handleSearch}
+          onFilter={handleFilterChange}
+          onSort={handleSortChange}
+          filters={filters}
+          sortOptions={{ sortBy, sortOrder: 'desc' }}
+          filterOptions={filterOptions}
+          loading={featured.status==='loading' || promo.status==='loading' || bestSelling.status==='loading'}
+        />
       </section>
 
       {/* Dynamic Product Sections replacing Shop by Category */}
