@@ -79,26 +79,28 @@ const AllProducts = () => {
     setError(null);
     
     try {
+      const computedQ = (params.searchQuery !== undefined) ? params.searchQuery : searchQuery;
       const searchParams = {
-        q: params.searchQuery || searchQuery,
-        category: params.filters?.category || filters.category,
-        subcategories: (params.filters?.subcategories || filters.subcategories).join(','),
+        q: computedQ,
+        category: params.filters?.category ?? filters.category,
+        subcategories: (params.filters?.subcategories ?? filters.subcategories).join(','),
         minPrice: params.filters?.priceRange?.min ?? filters.priceRange.min,
         maxPrice: params.filters?.priceRange?.max ?? filters.priceRange.max,
-        sizes: (params.filters?.sizes || filters.sizes).join(','),
-        ages: (params.filters?.ages || filters.ages).join(','),
-        colors: (params.filters?.colors || filters.colors).join(','),
-        brands: (params.filters?.brands || filters.brands).join(','),
-        tags: (params.filters?.tags || filters.tags).join(','),
-        available: params.filters?.available !== undefined ? params.filters.available : filters.available,
-        sortBy: params.sortBy || sortBy,
+        sizes: (params.filters?.sizes ?? filters.sizes).join(','),
+        ages: (params.filters?.ages ?? filters.ages).join(','),
+        colors: (params.filters?.colors ?? filters.colors).join(','),
+        brands: (params.filters?.brands ?? filters.brands).join(','),
+        tags: (params.filters?.tags ?? filters.tags).join(','),
+        available: (params.filters?.available !== undefined) ? params.filters.available : filters.available,
+        sortBy: params.sortBy ?? sortBy,
         sortOrder: 'desc',
-        page: params.page || currentPage,
+        page: params.page ?? currentPage,
         limit: 20
       };
 
-      // Remove empty parameters
+      // Remove empty parameters except allowing empty string for q to clear search
       Object.keys(searchParams).forEach(key => {
+        if (key === 'q') return; // keep empty string to mean 'no query'
         if (searchParams[key] === '' || searchParams[key] === null || searchParams[key] === undefined) {
           delete searchParams[key];
         }
@@ -107,21 +109,30 @@ const AllProducts = () => {
       const response = await axios.get(`${backend_url}/products/search`, { params: searchParams });
       
       if (response.data.success) {
-        setProducts(response.data.products);
+        // Apply a defensive client-side filter when q is present, in case backend returns unfiltered results
+        const serverProducts = response.data.products || [];
+        const q = (computedQ || '').trim().toLowerCase();
+        const locallyFiltered = q ? serverProducts.filter(p => {
+          const fields = [p?.name, p?.brand, p?.categoryName || p?.category, p?.subcategoryName || p?.subcategory, ...(Array.isArray(p?.tags) ? p.tags : [])]
+            .filter(Boolean).map(String).map(s => s.toLowerCase());
+          return fields.some(f => f.includes(q));
+        }) : serverProducts;
+
+        setProducts(locallyFiltered);
         setPagination(response.data.pagination);
         
         // Update URL
         updateUrlParams({
           q: searchParams.q,
           category: searchParams.category,
-          subcategories: params.filters?.subcategories || filters.subcategories,
+          subcategories: params.filters?.subcategories ?? filters.subcategories,
           minPrice: searchParams.minPrice,
           maxPrice: searchParams.maxPrice,
-          sizes: params.filters?.sizes || filters.sizes,
-          ages: params.filters?.ages || filters.ages,
-          colors: params.filters?.colors || filters.colors,
-          brands: params.filters?.brands || filters.brands,
-          tags: params.filters?.tags || filters.tags,
+          sizes: params.filters?.sizes ?? filters.sizes,
+          ages: params.filters?.ages ?? filters.ages,
+          colors: params.filters?.colors ?? filters.colors,
+          brands: params.filters?.brands ?? filters.brands,
+          tags: params.filters?.tags ?? filters.tags,
           available: searchParams.available,
           sortBy: searchParams.sortBy,
           page: searchParams.page

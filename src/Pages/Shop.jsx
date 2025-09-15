@@ -9,6 +9,7 @@ import { getImageUrl } from '../utils/imageUtils'
 import { useI18n } from '../utils/i18n'
 import ProductSection from '../Components/ProductSection/ProductSection'
 import ProductSearch from '../Components/ProductSearch/ProductSearch'
+import ProductGrid from '../Components/ProductGrid/ProductGrid'
 import VariantSelectorModal from '../Components/VariantSelectorModal/VariantSelectorModal'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchBestSellingProducts, fetchFeaturedProducts, fetchPromoProducts, selectBestSelling, selectFeatured, selectPromo } from '../store/productSectionsSlice'
@@ -38,6 +39,9 @@ const Shop = () => {
     available: null,
   })
   const [filterOptions, setFilterOptions] = useState({})
+  const [searchResults, setSearchResults] = useState([])
+  const [searchActive, setSearchActive] = useState(false)
+  const [resultsViewMode, setResultsViewMode] = useState('grid')
   const [shopImages, setShopImages] = useState({
     hero: [],
     category: [],
@@ -181,6 +185,27 @@ const Shop = () => {
   // Search/Filter/Sort handlers for sections filter
   const handleSearch = (query) => {
     setSearchQuery(query)
+    const q = (query || '').trim().toLowerCase()
+    if (!q) {
+      setSearchResults([])
+      setSearchActive(false)
+      return
+    }
+    // Local, fast filter over all products as a fallback for sections API
+    const filtered = (products || []).filter(p => {
+      if (!p) return false
+      const fields = [
+        p.name,
+        p.brand,
+        // prefer normalized names if present
+        p.categoryName || p.category,
+        p.subcategoryName || p.subcategory,
+        ...(Array.isArray(p.tags) ? p.tags : [])
+      ].filter(Boolean).map(String).map(s => s.toLowerCase())
+      return fields.some(f => f.includes(q))
+    })
+    setSearchResults(filtered)
+    setSearchActive(true)
   }
 
   const handleFilterChange = (newFilters) => {
@@ -314,6 +339,24 @@ const Shop = () => {
           loading={featured.status==='loading' || promo.status==='loading' || bestSelling.status==='loading'}
         />
       </section>
+
+      {/* Search results (client-side fallback) */}
+      {searchActive && (
+        <section className="container">
+          <div className="section-head centered">
+            <h2 className="section-title">{t('search.results_count', { count: searchResults.length })}</h2>
+            <p className="section-subtitle">{t('search.try_adjusting')}</p>
+          </div>
+          <ProductGrid
+            products={searchResults}
+            loading={false}
+            error={null}
+            pagination={null}
+            viewMode={resultsViewMode}
+            onViewModeChange={setResultsViewMode}
+          />
+        </section>
+      )}
 
       {/* Dynamic Product Sections replacing Shop by Category */}
       <ProductSection

@@ -33,13 +33,8 @@ const ProductSearch = ({
   const handleSearchChange = (e) => {
     const query = e.target.value;
     setSearchQuery(query);
-    
-    // Debounce search
-    const timeoutId = setTimeout(() => {
-      onSearch(query);
-    }, 300);
-
-    return () => clearTimeout(timeoutId);
+    // Trigger search immediately for responsiveness
+    onSearch(query);
   };
 
   const handleFilterChange = (filterType, value) => {
