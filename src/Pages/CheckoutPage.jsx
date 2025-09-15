@@ -123,18 +123,21 @@ const CheckoutPage = () => {
       return;
     }
 
-    // Convert cartItems object to array format expected by backend
+    // Convert cartItems object to array format expected by backend, including variant
     const orderItems = [];
     for (const itemId in cartItems) {
-      if (cartItems[itemId] > 0) {
+      const entry = cartItems[itemId];
+      const qty = typeof entry === 'number' ? entry : (entry?.quantity || 0);
+      if (qty > 0) {
         const product = products.find(p => p.id === Number(itemId));
         if (product) {
           orderItems.push({
             id: product.id,
             name: product.name,
-            quantity: cartItems[itemId],
+            quantity: qty,
             price: product.new_price,
-            image: product.image
+            image: product.image,
+            variant: typeof entry === 'number' ? null : (entry?.variant || null)
           });
         }
       }

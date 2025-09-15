@@ -27,15 +27,9 @@ const ProductDisplay = ({ product }) => {
       setMainImage(productImages[0]);
     }
 
-    // Initialize selected variants if available
-    if (product.sizes && product.sizes.length > 0) {
-      setSelectedSize(product.sizes[0]);
-    }
-    if (product.colors && product.colors.length > 0) {
-      setSelectedColor(product.colors[0]);
-    }
+    // Do not auto-select size/color; user must choose explicitly if required
     if (product.ageRange && typeof product.ageRange === 'object' && product.ageRange.min !== undefined) {
-      // If ageRange is object with min/max, select min as default age string
+      // Age is informational; not enforced as required unless part of product.variants
       const ageString = `${product.ageRange.min} - ${product.ageRange.max} months`;
       setSelectedAge(ageString);
     }
@@ -62,11 +56,17 @@ const ProductDisplay = ({ product }) => {
 
   const stockStatus = stockCount === 0 ? "out-of-stock" : stockCount <= 5 ? "low-stock" : "in-stock";
 
+  const requiresSize = Array.isArray(product.sizes) && product.sizes.length > 0;
+  const requiresColor = Array.isArray(product.colors) && product.colors.length > 0;
+  const isVariantValid = (!requiresSize || !!selectedSize) && (!requiresColor || !!selectedColor);
+  const isAddDisabled = stockStatus === "out-of-stock" || !isVariantValid;
+
   const handleAddToCart = () => {
+    if (!isVariantValid) return;
     addToCart(product.id, {
-      size: selectedSize,
-      color: selectedColor,
-      age: selectedAge,
+      size: selectedSize || undefined,
+      color: selectedColor || undefined,
+      age: selectedAge || undefined,
     });
   };
 
@@ -158,8 +158,8 @@ const ProductDisplay = ({ product }) => {
           </div>
         )}
 
-        <button onClick={handleAddToCart} disabled={stockStatus === "out-of-stock"}>
-          {stockStatus === "out-of-stock" ? "OUT OF STOCK" : "ADD TO CART"}
+        <button onClick={handleAddToCart} disabled={isAddDisabled}>
+          {stockStatus === "out-of-stock" ? "OUT OF STOCK" : (!isVariantValid ? "SELECT OPTIONS" : "ADD TO CART")}
         </button>
 
         <div className="productdisplay-details">

@@ -14,7 +14,11 @@ const CartItems = () => {
   const { t } = useI18n();
 
   const items = useMemo(
-    () => products.filter((p) => (cartItems[p.id] || 0) > 0),
+    () => products.filter((p) => {
+      const entry = cartItems[p.id];
+      const qty = typeof entry === 'number' ? entry : (entry?.quantity || 0);
+      return qty > 0;
+    }),
     [products, cartItems]
   );
 
@@ -50,7 +54,9 @@ const CartItems = () => {
           <h1 className="title">{t('cart.title')}</h1>
           <div className="list">
             {items.map((p) => {
-              const qty = cartItems[p.id] || 0;
+              const entry = cartItems[p.id];
+              const qty = typeof entry === 'number' ? entry : (entry?.quantity || 0);
+              const variant = typeof entry === 'number' ? null : (entry?.variant || null);
               const unit = Number(p.new_price || 0);
               const old = Number(p.old_price || 0);
               const hasDiscount = old > unit && unit > 0;
@@ -62,6 +68,13 @@ const CartItems = () => {
                   </div>
                   <div className="info">
                     <h3 className="name" title={p.name}>{p.name}</h3>
+                    {variant && (
+                      <div className="variant-line">
+                        {variant.size && <span className="variant-pill">Size: {variant.size}</span>}
+                        {variant.color && <span className="variant-pill">Color: {variant.color}</span>}
+                        {variant.age && <span className="variant-pill">Age: {variant.age}</span>}
+                      </div>
+                    )}
                     <div className="price-line">
                       <span className="price-new">{formatPrice(unit)}</span>
                       {hasDiscount && (<>

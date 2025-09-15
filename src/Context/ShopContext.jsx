@@ -15,6 +15,9 @@ const ShopContextProvider = (props) => {
     return cart;
   };
 
+  // cartItems now stores per-product entries keyed by product id,
+  // with quantity and optional variant object for the last selection.
+  // Backward compatible with numbers; we normalize when reading.
   const [cartItems, setCartItems] = useState(getDefaultCart());
 
   // Function to fetch products
@@ -69,10 +72,12 @@ const ShopContextProvider = (props) => {
   const getTotalCartAmount = () => {
     let totalAmount = 0;
     for (const item in cartItems) {
-      if (cartItems[item] > 0) {
+      const entry = cartItems[item];
+      const qty = typeof entry === 'number' ? entry : (entry?.quantity || 0);
+      if (qty > 0) {
         const itemInfo = products.find((product) => product.id === Number(item));
         if (itemInfo) {
-          totalAmount += cartItems[item] * itemInfo.new_price;
+          totalAmount += qty * itemInfo.new_price;
         }
       }
     }
@@ -82,10 +87,12 @@ const ShopContextProvider = (props) => {
   const getTotalCartItems = () => {
     let totalItem = 0;
     for (const item in cartItems) {
-      if (cartItems[item] > 0) {
+      const entry = cartItems[item];
+      const qty = typeof entry === 'number' ? entry : (entry?.quantity || 0);
+      if (qty > 0) {
         const itemInfo = products.find((product) => product.id === Number(item));
         if (itemInfo) {
-          totalItem += cartItems[item];
+          totalItem += qty;
         }
       }
     }
@@ -93,7 +100,15 @@ const ShopContextProvider = (props) => {
   };
 
   const addToCart = (itemId, variant = null) => {
-    setCartItems((prev) => ({ ...prev, [itemId]: (prev[itemId] || 0) + 1 }));
+    setCartItems((prev) => {
+      const existing = prev[itemId];
+      // Normalize to object with quantity and variant
+      if (typeof existing === 'number') {
+        return { ...prev, [itemId]: { quantity: existing + 1, variant: variant || null } };
+      }
+      const nextQty = (existing?.quantity || 0) + 1;
+      return { ...prev, [itemId]: { quantity: nextQty, variant: variant || existing?.variant || null } };
+    });
 
     const authToken = localStorage.getItem("auth-token");
     if (authToken) {
@@ -104,13 +119,20 @@ const ShopContextProvider = (props) => {
           'auth-token': authToken,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(variant ? { itemId, variant } : { itemId }),
+        body: JSON.stringify({ itemId, variant, quantity: 1 }),
       });
     }
   };
 
   const removeFromCart = (itemId) => {
-    setCartItems((prev) => ({ ...prev, [itemId]: Math.max((prev[itemId] || 0) - 1, 0) }));
+    setCartItems((prev) => {
+      const existing = prev[itemId];
+      if (typeof existing === 'number') {
+        return { ...prev, [itemId]: Math.max(existing - 1, 0) };
+      }
+      const nextQty = Math.max((existing?.quantity || 0) - 1, 0);
+      return { ...prev, [itemId]: { quantity: nextQty, variant: existing?.variant || null } };
+    });
 
     const authToken = localStorage.getItem("auth-token");
     if (authToken) {
