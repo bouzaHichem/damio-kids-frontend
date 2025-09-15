@@ -177,16 +177,15 @@ const ProductGrid = ({
                 onSale={product.on_sale}
                 featured={product.featured}
                 stockQuantity={product.stock_quantity}
-                available={product.avilable}
+                availability={product.avilable}
                 brand={product.brand}
                 category={product.category}
-                sizes={product.sizes}
-                colors={product.colors}
+                sizes={product.sizes || []}
+                colors={product.colors || []}
                 rating={product.rating}
                 reviewCount={product.reviewCount}
-                viewMode={viewMode}
-                onImageError={() => handleImageError(product.id)}
-                hasImageError={imageErrors[product.id]}
+                viewType={viewMode}
+                onErrorImage={null}
               />
             </div>
           ))

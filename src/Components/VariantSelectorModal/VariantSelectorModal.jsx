@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import ReactDOM from 'react-dom';
 import './VariantSelectorModal.css';
 
 const VariantSelectorModal = ({ product, onConfirm, onClose }) => {
@@ -13,8 +14,17 @@ const VariantSelectorModal = ({ product, onConfirm, onClose }) => {
     // Do not preselect; force a user choice
   }, [product]);
 
-  return (
-    <div className="var-modal-backdrop" role="dialog" aria-modal="true">
+  // Lock body scroll while open
+  useEffect(() => {
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const onKey = (e) => { if (e.key === 'Escape') onClose?.(); };
+    window.addEventListener('keydown', onKey);
+    return () => { document.body.style.overflow = prev; window.removeEventListener('keydown', onKey); };
+  }, [onClose]);
+
+  const content = (
+    <div className="var-modal-backdrop" role="dialog" aria-modal="true" onClick={(e)=>{ if (e.target === e.currentTarget) onClose?.(); }}>
       <div className="var-modal">
         <div className="var-modal-header">
           <h3>Select options</h3>
@@ -50,6 +60,8 @@ const VariantSelectorModal = ({ product, onConfirm, onClose }) => {
       </div>
     </div>
   );
+
+  return ReactDOM.createPortal(content, document.body);
 };
 
 export default VariantSelectorModal;
