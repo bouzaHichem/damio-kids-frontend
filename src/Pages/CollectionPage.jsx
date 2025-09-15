@@ -190,6 +190,8 @@ const CollectionPage = () => {
                   new_price={product.new_price}
                   old_price={product.old_price}
                   isNew={product.newCollection}
+                  sizes={product.sizes || []}
+                  colors={product.colors || []}
                 />
               ))
             ) : (

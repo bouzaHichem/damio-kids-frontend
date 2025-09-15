@@ -9,6 +9,7 @@ import { getImageUrl } from '../utils/imageUtils'
 import { useI18n } from '../utils/i18n'
 import ProductSection from '../Components/ProductSection/ProductSection'
 import ProductSearch from '../Components/ProductSearch/ProductSearch'
+import VariantSelectorModal from '../Components/VariantSelectorModal/VariantSelectorModal'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchBestSellingProducts, fetchFeaturedProducts, fetchPromoProducts, selectBestSelling, selectFeatured, selectPromo } from '../store/productSectionsSlice'
 
@@ -298,6 +299,9 @@ const Shop = () => {
         </div>
       </section>
 
+      {/* Variant modal host for collection previews */}
+      <VariantSelectorHost />
+
       {/* Filters for sections */}
       <section className="home-filters container">
         <ProductSearch
@@ -384,9 +388,17 @@ const Shop = () => {
                               <span className="price-old">{product.old_price} د.ج</span>
                             )}
                           </div>
-                          <button
+                  <button
                             className="mini-add-btn"
-                            onClick={() => addToCart(id)}
+                            onClick={() => {
+                              const needsVariant = (Array.isArray(product.sizes) && product.sizes.length > 0) || (Array.isArray(product.colors) && product.colors.length > 0);
+                              if (needsVariant && window.dispatchEvent) {
+                                const evt = new CustomEvent('openVariantSelector', { detail: { product, productId: id } });
+                                window.dispatchEvent(evt);
+                              } else {
+                                addToCart(id);
+                              }
+                            }}
                           >
                             {t('action.add_to_cart')}
                           </button>
@@ -445,6 +457,25 @@ const Shop = () => {
       </section>
     </div>
   )
+}
+
+// Global variant modal host used by Shop collection previews
+function VariantSelectorHost() {
+  const [modal, setModal] = React.useState({ open: false, product: null, id: null });
+  const { addToCart } = React.useContext(ShopContext);
+  React.useEffect(() => {
+    const handler = (e) => setModal({ open: true, product: e.detail.product, id: e.detail.productId });
+    window.addEventListener('openVariantSelector', handler);
+    return () => window.removeEventListener('openVariantSelector', handler);
+  }, []);
+  if (!modal.open) return null;
+  return (
+    <VariantSelectorModal
+      product={modal.product}
+      onClose={() => setModal({ open: false, product: null, id: null })}
+      onConfirm={(variant) => { setModal({ open: false, product: null, id: null }); addToCart(modal.id, variant); }}
+    />
+  );
 }
 
 export default Shop

@@ -91,7 +91,7 @@ const SubcategoryPage = () => {
       </div>
       <div className="shopcategory-products">
         {filtered.map((item,i) => (
-          <Item id={item.id} key={i} name={item.name} image={item.image} new_price={item.new_price} old_price={item.old_price} />
+          <Item id={item.id} key={i} name={item.name} image={item.image} new_price={item.new_price} old_price={item.old_price} sizes={item.sizes || []} colors={item.colors || []} />
         ))}
       </div>
     </div>
