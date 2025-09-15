@@ -5,10 +5,12 @@ import { ShopContext } from '../../Context/ShopContext';
 import { getImageUrl } from '../../utils/imageUtils';
 import { useNavigate } from 'react-router-dom';
 import { useI18n } from '../../utils/i18n';
+import VariantSelectorModal from '../VariantSelectorModal/VariantSelectorModal';
 
 const ProductCardModern = ({ product, trending = false }) => {
   const navigate = useNavigate();
   const { addToCart } = useContext(ShopContext);
+  const [showVariant, setShowVariant] = useState(false);
   const { t } = useI18n();
   const [wish, setWish] = useState(false);
 
@@ -32,6 +34,16 @@ const ProductCardModern = ({ product, trending = false }) => {
     } catch {}
   };
 
+  const requiresVariant = (Array.isArray(product?.sizes) && product.sizes.length > 0) || (Array.isArray(product?.colors) && product.colors.length > 0);
+
+  const onAdd = () => {
+    if (requiresVariant) {
+      setShowVariant(true);
+    } else {
+      addToCart(id);
+    }
+  };
+
   return (
     <motion.article
       className="pcard"
@@ -47,11 +59,20 @@ const ProductCardModern = ({ product, trending = false }) => {
         {trending && <span className="pcard-badge trend">🔥 {t('home.trending')}</span>}
         <img src={getImageUrl(image)} alt={name} loading="lazy" onError={(e)=>{e.currentTarget.src='/api/placeholder/600/400'}} />
         <div className="pcard-actions" role="group" aria-label="Quick actions">
-          <button className="pcard-btn" onClick={() => addToCart(id)} aria-label={t('action.add_to_cart')}>{t('action.add_to_cart')}</button>
+          <button className="pcard-btn" onClick={onAdd} aria-label={t('action.add_to_cart')}>{t('action.add_to_cart')}</button>
           <button className="pcard-icon" aria-pressed={wish} onClick={onWishlist} aria-label="Toggle wishlist">❤</button>
           <button className="pcard-icon" onClick={() => navigate(`/product/${id}`)} aria-label="Quick view">👁</button>
         </div>
       </div>
+
+      {showVariant && (
+        <VariantSelectorModal
+          product={product}
+          onClose={() => setShowVariant(false)}
+          onConfirm={(variant) => { setShowVariant(false); addToCart(id, variant); }}
+        />
+      )}
+
       <div className="pcard-info">
         <h3 className="pcard-title" title={name}>{name}</h3>
         <div className="pcard-price">

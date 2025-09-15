@@ -6,6 +6,7 @@ import { ShopContext } from '../../Context/ShopContext';
 import PropTypes from 'prop-types';
 import Rating from '../Rating'; // Assume a rating component is available
 import { getImageUrl, handleImageError } from '../../utils/imageUtils';
+import VariantSelectorModal from '../VariantSelectorModal/VariantSelectorModal';
 
 const Item = ({
   id, image, name, new_price, old_price, isNew,
@@ -13,6 +14,7 @@ const Item = ({
   stockQuantity, featured, viewType, onErrorImage
 }) => {
   const { addToCart } = useContext(ShopContext);
+  const [showVariant, setShowVariant] = React.useState(false);
 
   // Calculate discount percentage
   const discountPercentage = old_price && new_price ? 
@@ -21,10 +23,16 @@ const Item = ({
   // Determine badges
   const isOnSale = discountPercentage > 0;
 
+  const requiresVariant = (Array.isArray(sizes) && sizes.length > 0) || (Array.isArray(colors) && colors.length > 0);
+
   const handleAddToCart = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    addToCart(id);
+    if (requiresVariant) {
+      setShowVariant(true);
+    } else {
+      addToCart(id);
+    }
   };
 
   const handleQuickView = (e) => {
@@ -59,6 +67,14 @@ const Item = ({
       </div>
 
       <div className="item-content">
+
+        {showVariant && (
+          <VariantSelectorModal
+            product={{ id, name, sizes, colors }}
+            onClose={() => setShowVariant(false)}
+            onConfirm={(variant) => { setShowVariant(false); addToCart(id, variant); }}
+          />
+        )}
         <p className="item-name">{name}</p>
 
         {/* Price Section */}
