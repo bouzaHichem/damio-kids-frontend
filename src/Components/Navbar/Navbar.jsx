@@ -132,13 +132,20 @@ const Navbar = () => {
     );
   }
 
-  // Helper to map category names to route segments and active keys
-  const normalizeKey = (name = '') => name.toLowerCase();
-  const toRouteSegment = (name = '') => {
-    const lower = name.toLowerCase();
-    if (lower === 'garçon') return 'garcon';
-    return lower;
-  };
+  // Helpers to create consistent slugs for category URLs and keys
+  const slugify = (str = '') =>
+    (str || '')
+      .toString()
+      .normalize('NFD')
+      .replace(/\p{Diacritic}/gu, '')
+      .toLowerCase()
+      .replace(/\s+/g, '-')
+      .replace(/[^a-z0-9-]/g, '')
+      .replace(/-+/g, '-')
+      .replace(/^-|-$/g, '');
+
+  const normalizeKey = (name = '') => slugify(name);
+  const toRouteSegment = (name = '') => slugify(name);
 
   return (
     <div className='nav'>

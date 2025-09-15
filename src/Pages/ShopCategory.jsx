@@ -4,7 +4,7 @@ import { productService } from '../services/apiService';
 import "./CSS/ShopCategory.css";
 import dropdown_icon from '../Components/Assets/dropdown_icon.png'
 import Item from "../Components/Item/Item";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { getImageUrl } from '../utils/imageUtils';
 import { useI18n } from '../utils/i18n';
 
@@ -23,6 +23,10 @@ const slugify = (str = '') =>
 const ShopCategory = (props) => {
 
   const { t } = useI18n();
+  const params = useParams();
+  const routeCategory = params?.category;
+  const selectedCategorySlug = slugify(String(props.category || routeCategory || ''));
+
   const [allproducts, setAllProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
@@ -30,7 +34,7 @@ const ShopCategory = (props) => {
 
   const fetchInfo = async () => { 
     try {
-      const cat = categories.find(c => slugify(c.name) === slugify(String(props.category)));
+      const cat = categories.find(c => slugify(c.name) === selectedCategorySlug);
       if (!cat) { setAllProducts([]); return; }
       const res = await productService.searchProducts({ categoryId: cat._id, page: 1, limit: 120 });
       const list = res?.products || res?.data?.products || [];
@@ -60,19 +64,19 @@ const ShopCategory = (props) => {
       if (categories.length) {
         fetchInfo();
       }
-    }, [categories, props.category])
+    }, [categories, selectedCategorySlug])
 
     // Update banner when categories or selected category change
     useEffect(() => {
-      if (categories.length > 0 && props.category) {
-        const match = categories.find(c => slugify(c.name) === slugify(String(props.category)));
+      if (categories.length > 0 && selectedCategorySlug) {
+        const match = categories.find(c => slugify(c.name) === selectedCategorySlug);
         if (match?.bannerImage) {
           setCategoryBanner(getImageUrl(match.bannerImage));
         } else {
           setCategoryBanner('');
         }
       }
-    }, [categories, props.category])
+    }, [categories, selectedCategorySlug])
 
     // With server-side filtering, just mirror the loaded list
     useEffect(() => {
