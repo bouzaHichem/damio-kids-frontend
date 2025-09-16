@@ -80,9 +80,9 @@ const Navbar = () => {
 
   // Mobile menu toggle
   const dropdown_toggle = (e) => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-    menuRef.current.classList.toggle('nav-menu-visible');
-    // Ensure we toggle the class on the button itself, not on inner SVG nodes
+    // Drive visibility via React state instead of direct DOM class manipulation
+    setIsMobileMenuOpen((prev) => !prev);
+    // Toggle an "open" class on the button itself (purely cosmetic)
     e.currentTarget.classList.toggle('open');
   }
 
@@ -112,7 +112,7 @@ const Navbar = () => {
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false);
     setActiveDropdown(null);
-    menuRef.current.classList.remove('nav-menu-visible');
+    // No direct DOM manipulation; class is derived from state
   }
 
   // Cleanup
@@ -175,7 +175,7 @@ const Navbar = () => {
         </svg>
       </button>
 
-      <ul ref={menuRef} className="nav-menu">
+      <ul ref={menuRef} className={`nav-menu ${isMobileMenuOpen ? 'nav-menu-visible' : ''}`}>
         {/* Shop Link */}
         <li 
           className="nav-menu-item" 
