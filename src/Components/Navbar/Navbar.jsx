@@ -18,6 +18,7 @@ const Navbar = () => {
   const [error, setError] = useState(null);
   const { getTotalCartItems } = useContext(ShopContext);
   const menuRef = useRef();
+  const navContainerRef = useRef(null);
   const dropdownTimeoutRef = useRef(null);
   const location = useLocation();
 
@@ -122,6 +123,17 @@ const Navbar = () => {
     };
   }, []);
 
+  // Measure navbar height and expose as CSS var so the mobile menu sits exactly below it
+  useEffect(() => {
+    const updateNavHeight = () => {
+      const h = navContainerRef.current?.offsetHeight || 64;
+      document.documentElement.style.setProperty('--nav-height', `${h}px`);
+    };
+    updateNavHeight();
+    window.addEventListener('resize', updateNavHeight);
+    return () => window.removeEventListener('resize', updateNavHeight);
+  }, []);
+
   // Close mobile menu automatically on route change
   useEffect(() => {
     closeMobileMenu();
@@ -154,7 +166,7 @@ const Navbar = () => {
   const toRouteSegment = (name = '') => slugify(name);
 
   return (
-    <div className='nav'>
+    <div className='nav' ref={navContainerRef}>
       <Link to='/' onClick={() => { setMenu("shop"); closeMobileMenu() }} className="nav-logo">
         <img src={logo} alt="logo" />
       </Link>

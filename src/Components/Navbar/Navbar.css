@@ -332,7 +332,7 @@
     .nav-menu {
         /* Full-width fixed panel below the navbar */
         position: fixed;
-        top: 60px;
+        top: var(--nav-height, 60px);
         left: 0;
         right: 0;
         bottom: 0;
@@ -347,7 +347,7 @@
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
         /* iOS Safari viewport height handling */
-        max-height: calc(100dvh - 60px);
+        max-height: calc(100dvh - var(--nav-height, 60px));
         /* Below the sticky navbar (1000), above page content */
         z-index: 999;
         /* Prevent background overscroll/bounce while menu is open */
