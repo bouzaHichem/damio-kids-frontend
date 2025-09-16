@@ -330,9 +330,12 @@
     .nav-logout-btn{display:none}
 
     .nav-menu {
-        position: absolute;
+        /* Full-width fixed panel below the navbar */
+        position: fixed;
         top: 60px;
         left: 0;
+        right: 0;
+        bottom: 0;
         flex-direction: column;
         background: white;
         width: 100%;
@@ -340,6 +343,16 @@
         gap: 12px;
         padding: 14px;
         box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
+        /* Make the menu scrollable when content is tall */
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        /* iOS Safari viewport height handling */
+        max-height: calc(100dvh - 60px);
+        /* Below the sticky navbar (1000), above page content */
+        z-index: 999;
+        /* Prevent background overscroll/bounce while menu is open */
+        overscroll-behavior: contain;
+        padding-bottom: calc(14px + env(safe-area-inset-bottom));
     }
 
 .nav-menu-visible {

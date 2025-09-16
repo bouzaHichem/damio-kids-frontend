@@ -82,7 +82,8 @@ const Navbar = () => {
   const dropdown_toggle = (e) => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
     menuRef.current.classList.toggle('nav-menu-visible');
-    e.target.classList.toggle('open');
+    // Ensure we toggle the class on the button itself, not on inner SVG nodes
+    e.currentTarget.classList.toggle('open');
   }
 
   // Desktop hover handlers
@@ -120,6 +121,11 @@ const Navbar = () => {
       if (dropdownTimeoutRef.current) clearTimeout(dropdownTimeoutRef.current);
     };
   }, []);
+
+  // Close mobile menu automatically on route change
+  useEffect(() => {
+    closeMobileMenu();
+  }, [location.pathname]);
 
   if (loading) {
     return (
@@ -204,6 +210,7 @@ const Navbar = () => {
               <Link
                 to={`/${toRouteSegment(category.name)}`}
                 className="nav-link"
+                onClick={closeMobileMenu}
               >
                 {category.name}
               </Link>
