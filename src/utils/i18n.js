@@ -13,6 +13,7 @@ export const SUPPORTED_LANGUAGES = {
 export const DEFAULT_TRANSLATIONS = {
   // Navigation
 'nav.home': 'Home',
+  'nav.menu': 'Menu',
   'nav.shop': 'Shop',
   'nav.all_products': 'All Products',
   'nav.products': 'Products',
