@@ -188,12 +188,30 @@ const Navbar = () => {
       </button>
 
       <ul ref={menuRef} className={`nav-menu ${isMobileMenuOpen ? 'nav-menu-visible' : ''}`}>
+        {/* Mobile menu header (sticky) */}
+        <li className="nav-menu-header" role="presentation">
+          <div className="nav-menu-header-inner">
+            <span className="nav-menu-title">{t('nav.menu') || 'Menu'}</span>
+            <button
+              type="button"
+              className="nav-close-btn icon-btn"
+              aria-label="Close menu"
+              onClick={closeMobileMenu}
+            >
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                <path d="M18 6L6 18"></path>
+                <path d="M6 6l12 12"></path>
+              </svg>
+            </button>
+          </div>
+        </li>
+
         {/* Shop Link */}
         <li 
           className="nav-menu-item" 
           onClick={() => { setMenu("shop"); closeMobileMenu() }}
         >
-          <Link to='/' className="nav-link">
+          <Link to='/' className={`nav-link ${location.pathname === '/' ? 'active' : ''}`}>
             {t('nav.shop')}
           </Link>
           {location.pathname === '/' && <hr className="nav-underline" />}
@@ -204,7 +222,7 @@ const Navbar = () => {
           className="nav-menu-item" 
           onClick={() => { setMenu("products"); closeMobileMenu() }}
         >
-          <Link to='/products' className="nav-link">
+          <Link to='/products' className={`nav-link ${(location.pathname === '/products' || location.pathname.startsWith('/products/')) ? 'active' : ''}`}>
             {t('nav.all_products')}
           </Link>
           {(location.pathname === '/products' || location.pathname.startsWith('/products/')) && <hr className="nav-underline" />}
@@ -215,13 +233,17 @@ const Navbar = () => {
           <li
             key={category.id}
             className="nav-menu-item nav-item-with-dropdown"
+            aria-expanded={activeDropdown === normalizeKey(category.name)}
             onMouseEnter={() => handleMouseEnter(normalizeKey(category.name))}
             onMouseLeave={handleMouseLeave}
           >
             <div className="nav-item-row">
               <Link
                 to={`/${toRouteSegment(category.name)}`}
-                className="nav-link"
+                className={`nav-link ${(
+                  location.pathname === `/${toRouteSegment(category.name)}` ||
+                  location.pathname.startsWith(`/${toRouteSegment(category.name)}/`)
+                ) ? 'active' : ''}`}
                 onClick={closeMobileMenu}
               >
                 {category.name}
@@ -239,9 +261,9 @@ const Navbar = () => {
                     handleMobileClick(normalizeKey(category.name));
                   }}
                 >
-                  <span className="dropdown-arrow">
-                    {activeDropdown === normalizeKey(category.name) ? '▲' : '▼'}
-                  </span>
+                  <svg className="chevron" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                    <path d="M6 9l6 6 6-6"></path>
+                  </svg>
                 </button>
               )}
             </div>
