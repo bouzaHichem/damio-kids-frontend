@@ -317,6 +317,8 @@
 @media (max-width: 768px) {
     .nav {
         padding: 10px 14px;
+        /* Create a containing block for the absolute .nav-menu */
+        position: relative;
     }
 
     .nav-logo img { width: 110px; }
@@ -330,15 +332,14 @@
     .nav-logout-btn{display:none}
 
     .nav-menu {
-        /* Full-width fixed panel below the navbar */
-        position: fixed;
+        /* Full-width panel below the navbar; use absolute to avoid Safari fixed-position bugs in filtered/sticky parents */
+        position: absolute;
         top: var(--nav-height, 60px);
         left: 0;
-        right: 0;
-        bottom: 0;
+        width: 100%;
+        height: calc(100dvh - var(--nav-height, 60px));
         flex-direction: column;
         background: white;
-        width: 100%;
         display: none;
         gap: 12px;
         padding: 14px;
@@ -346,17 +347,21 @@
         /* Make the menu scrollable when content is tall */
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
-        /* iOS Safari viewport height handling */
-        max-height: calc(100dvh - var(--nav-height, 60px));
-        /* Below the sticky navbar (1000), above page content */
-        z-index: 999;
+        /* Above most page content and navbar */
+        z-index: 2000;
         /* Prevent background overscroll/bounce while menu is open */
         overscroll-behavior: contain;
         padding-bottom: calc(14px + env(safe-area-inset-bottom));
+        /* Improve paint/compositing on mobile Safari */
+        -webkit-transform: translateZ(0);
+                transform: translateZ(0);
+        will-change: transform;
     }
 
-.nav-menu-visible {
+    .nav-menu-visible {
         display: flex;
+        /* Ensure the panel overlays content starting at the top of the viewport area below navbar */
+        align-items: stretch;
     }
 
     /* Mobile right area icons spacing */
