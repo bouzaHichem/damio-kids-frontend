@@ -117,44 +117,67 @@ const CheckoutPage = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleOrder = async () => {
-    if (!form.prenom || !form.nom || !form.adresse || !form.telephone) {
+  const handleOrder = async (e) => {
+    if (e && typeof e.preventDefault === 'function') e.preventDefault();
+
+    if (!form.prenom || !form.nom || !form.adresse || !form.telephone || !form.wilaya || !form.commune) {
       toast.error("Veuillez remplir les champs obligatoires.");
       return;
     }
 
-    // Convert cartItems object to array format expected by backend, including variant
-    const orderItems = [];
+    // Build items with numeric price/quantity and subtotal
+    const items = [];
     for (const itemId in cartItems) {
       const entry = cartItems[itemId];
-      const qty = typeof entry === 'number' ? entry : (entry?.quantity || 0);
+      const qty = typeof entry === 'number' ? Number(entry) : Number(entry?.quantity || 0);
       if (qty > 0) {
         const product = products.find(p => p.id === Number(itemId));
         if (product) {
-          orderItems.push({
-            id: product.id,
+          const price = Number(product.new_price || 0);
+          items.push({
+            productId: product.id,
             name: product.name,
-            quantity: qty,
-            price: product.new_price,
             image: product.image,
-            variant: typeof entry === 'number' ? null : (entry?.variant || null)
+            price,
+            quantity: qty,
+            subtotal: price * qty,
           });
         }
       }
     }
 
-    const authToken = localStorage.getItem("auth-token");
-    const userId = authToken ? 'logged-user' : 'guest';
-    
-    const order = {
-      items: orderItems,
-      total: finalTotal,
-      deliveryFee: deliveryFee,
-      wilaya: form.wilaya,
-      commune: form.commune,
-      deliveryType: form.deliveryMethod,
-      address: `${form.prenom} ${form.nom}, ${form.adresse}, ${form.commune}, ${form.wilaya}. Tel: ${form.telephone}. Notes: ${form.notes}`,
-      userId: userId
+    if (!items.length) {
+      toast.error("Votre panier est vide.");
+      return;
+    }
+
+    const subtotal = items.reduce((sum, it) => sum + Number(it.subtotal || 0), 0);
+    const fee = Number(deliveryFee || 0);
+    const total = subtotal + fee;
+
+    const fullName = `${form.prenom} ${form.nom}`.trim();
+    const payload = {
+      items,
+      subtotal,
+      deliveryFee: fee,
+      total,
+      deliveryType: form.deliveryMethod || 'home',
+      paymentMethod: 'cash_on_delivery',
+      customerInfo: {
+        name: fullName,
+        email: (localStorage.getItem('userEmail') || `guest.${Date.now()}@damiokids.com`),
+        phone: form.telephone,
+      },
+      shippingAddress: {
+        fullName,
+        phone: form.telephone,
+        wilaya: form.wilaya,
+        commune: form.commune,
+        address: form.adresse,
+        postalCode: '',
+        notes: form.notes || ''
+      },
+      userId: (localStorage.getItem('auth-token') ? 'logged-user' : 'guest'),
     };
 
     try {
@@ -163,23 +186,24 @@ const CheckoutPage = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Accept": "application/json",
         },
-        body: JSON.stringify(order),
+        body: JSON.stringify(payload),
       });
 
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
 
       if (res.ok) {
         toast.success("Commande envoyée avec succès !");
         setCartItems(getDefaultCart());
-        // Clear guest cart from localStorage
         localStorage.removeItem("guest-cart");
         navigate("/OrderConfirmation");
       } else {
+        console.error('Place order error:', data);
         toast.error(data?.error || "Erreur lors de l'envoi de la commande.");
       }
     } catch (err) {
-      console.error(err);
+      console.error('Network error placing order:', err);
       toast.error("Erreur de connexion au serveur.");
     } finally {
       setLoading(false);
@@ -290,6 +314,7 @@ const CheckoutPage = () => {
         </div>
 
         <button
+          type="button"
           className="checkout-button"
           onClick={handleOrder}
           disabled={loading}
