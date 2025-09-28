@@ -478,6 +478,10 @@
     .submenu-toggle {
         display: none;
     }
+    /* Hide mobile-only menu header on desktop */
+    .nav-menu-header {
+        display: none;
+    }
 }
 
 @media (max-width: 768px) {
