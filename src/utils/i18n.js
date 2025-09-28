@@ -183,6 +183,21 @@ export const DEFAULT_TRANSLATIONS = {
   'footer.terms_of_service': 'Terms of Service',
   'footer.copyright': '© {year} Damio Kids. All rights reserved.',
   
+  // Contact page
+  'contact.get_in_touch': 'Get in touch',
+  'contact.your_name': 'Your name',
+  'contact.your_email': 'Your email',
+  'contact.your_message': 'Your message',
+  'contact.sending': 'Sending...',
+  'contact.send_message': 'Send message',
+  'contact.success_message': 'Thanks! Your message has been sent.',
+  'contact.error_message': 'Sorry, something went wrong. Please try again.',
+  'contact.visit_us': 'Visit us',
+  'contact.address': 'Address',
+  'contact.phone': 'Phone',
+  'contact.email': 'Email',
+  'contact.hours': 'Hours',
+  
   // PWA
   'pwa.install': 'Install App',
   'pwa.update_available': 'Update Available',

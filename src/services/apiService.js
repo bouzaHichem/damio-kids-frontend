@@ -278,6 +278,20 @@ export const utilityService = {
   }
 };
 
+// Contact services
+export const contactService = {
+  async submitContact(form) {
+    // Expecting: { name, email, message }
+    const payload = {
+      name: String(form.name || '').trim(),
+      email: String(form.email || '').trim(),
+      message: String(form.message || '').trim(),
+    };
+    const response = await api.post('/api/contact', payload);
+    return response.data;
+  }
+};
+
 // Admin services (compatibility helpers for varying backend payload shapes)
 export const adminService = {
   async getShopImages(params = {}) {

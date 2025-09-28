@@ -5,6 +5,8 @@
   "nav.about": "من نحن",
   "nav.cart": "السلة",
   "nav.account": "حسابي",
+  "nav.home": "الرئيسية",
+  "nav.contact": "اتصل بنا",
 
   "account.login": "تسجيل الدخول",
   "account.logout": "تسجيل الخروج",
@@ -142,6 +144,19 @@
   "order_confirmation.back_home": "العودة إلى الصفحة الرئيسية",
   "order_confirmation.need_help": "تحتاج مساعدة؟",
   "order_confirmation.contact_intro": "إذا كان لديك أي أسئلة، فنحن هنا لمساعدتك.",
-  "order_confirmation.auto_redirect_notice": "سيتم تحويلك إلى الصفحة الرئيسية خلال {seconds} ثانية."
+  "order_confirmation.auto_redirect_notice": "سيتم تحويلك إلى الصفحة الرئيسية خلال {seconds} ثانية.",
+  "contact.get_in_touch": "تواصل معنا",
+  "contact.your_name": "اسمك",
+  "contact.your_email": "بريدك الإلكتروني",
+  "contact.your_message": "رسالتك",
+  "contact.sending": "جارٍ الإرسال...",
+  "contact.send_message": "إرسال الرسالة",
+  "contact.success_message": "شكراً! تم إرسال رسالتك بنجاح.",
+  "contact.error_message": "عذراً، حدث خطأ ما. يرجى المحاولة مرة أخرى.",
+  "contact.visit_us": "زورونا",
+  "contact.address": "العنوان",
+  "contact.phone": "الهاتف",
+  "contact.email": "البريد الإلكتروني",
+  "contact.hours": "ساعات العمل"
 }
 

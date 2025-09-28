@@ -27,14 +27,16 @@ const Contact = () => {
     setSubmitStatus('');
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Here you would normally send the data to your backend
-      console.log('Form submitted:', formData);
-      
-      setSubmitStatus('success');
-      setFormData({ name: '', email: '', message: '' });
+      // Call backend to send email
+      const { contactService } = await import('../services/apiService');
+      const res = await contactService.submitContact(formData);
+
+      if (res?.success) {
+        setSubmitStatus('success');
+        setFormData({ name: '', email: '', message: '' });
+      } else {
+        setSubmitStatus('error');
+      }
     } catch (error) {
       console.error('Error submitting form:', error);
       setSubmitStatus('error');

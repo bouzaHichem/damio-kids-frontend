@@ -5,6 +5,8 @@
   "nav.about": "À propos",
   "nav.cart": "Panier",
   "nav.account": "Mon compte",
+  "nav.home": "Accueil",
+  "nav.contact": "Contact",
 
   "account.login": "Se connecter",
   "account.logout": "Se déconnecter",
@@ -142,6 +144,19 @@
   "order_confirmation.back_home": "Retour à l'accueil",
   "order_confirmation.need_help": "Besoin d'aide ?",
   "order_confirmation.contact_intro": "Si vous avez des questions, notre équipe est là pour vous aider.",
-  "order_confirmation.auto_redirect_notice": "Vous serez redirigé vers la page d'accueil dans {seconds} secondes."
+  "order_confirmation.auto_redirect_notice": "Vous serez redirigé vers la page d'accueil dans {seconds} secondes.",
+  "contact.get_in_touch": "Contactez-nous",
+  "contact.your_name": "Votre nom",
+  "contact.your_email": "Votre e-mail",
+  "contact.your_message": "Votre message",
+  "contact.sending": "Envoi...",
+  "contact.send_message": "Envoyer le message",
+  "contact.success_message": "Merci ! Votre message a été envoyé.",
+  "contact.error_message": "Désolé, une erreur s'est produite. Veuillez réessayer.",
+  "contact.visit_us": "Venez nous voir",
+  "contact.address": "Adresse",
+  "contact.phone": "Téléphone",
+  "contact.email": "E-mail",
+  "contact.hours": "Horaires"
 }
 
