@@ -140,6 +140,8 @@ const CheckoutPage = () => {
               image: product.image,
               price,
               quantity: qty,
+              size: line?.variant?.size || '',
+              color: line?.variant?.color || '',
               variant: line.variant || null,
               subtotal: price * qty,
             });
