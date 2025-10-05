@@ -65,17 +65,57 @@ const ProductDisplay = ({ product }) => {
   // Consolidate all size-like options: variant sizes, clothing sizes, custom sizes, and shoe sizes
   const allSizes = useMemo(() => {
     const set = new Set();
-    // 1) Sizes from explicit arrays
-    (product?.sizes || []).forEach(s => s && set.add(String(s)));
-    (product?.customSizes || []).forEach(s => s && set.add(String(s)));
-    (product?.shoeSizes || []).forEach(s => s && set.add(String(s)));
-    // 2) Sizes derived from variant objects
-    if (Array.isArray(product?.variants)) {
-      product.variants.forEach(v => {
-        const vs = v?.size;
-        if (vs) set.add(String(vs));
+
+    const addMany = (arr) => {
+      if (!Array.isArray(arr)) return;
+      arr.forEach((s) => {
+        if (s === null || s === undefined) return;
+        const val = typeof s === 'string' || typeof s === 'number' ? String(s) : (s?.label || s?.value);
+        if (val) set.add(val);
+      });
+    };
+
+    // 1) Common fields on product
+    addMany(product?.sizes);
+    addMany(product?.customSizes);
+    addMany(product?.shoeSizes);
+    addMany(product?.availableSizes);
+
+    // 2) Variants may be an object with arrays (e.g., { sizes: [], ageGroups: [] })
+    if (product?.variants && !Array.isArray(product.variants) && typeof product.variants === 'object') {
+      addMany(product.variants.sizes);
+      addMany(product.variants.sizeOptions);
+      addMany(product.variants.ageGroups);
+      addMany(product.variants.shoeSizes);
+      // Generic scan for any array prop with "size" in the key
+      Object.entries(product.variants).forEach(([k, v]) => {
+        if (/size/i.test(k)) addMany(v);
       });
     }
+
+    // 3) Variants may be an array of variant objects
+    if (Array.isArray(product?.variants)) {
+      product.variants.forEach((v) => {
+        if (!v || typeof v !== 'object') return;
+        if (v.size) set.add(String(v.size));
+        if (Array.isArray(v.sizes)) addMany(v.sizes);
+        if (v.attributes && typeof v.attributes === 'object') {
+          // Common patterns like attributes.Size or attributes.size
+          const maybe = v.attributes.Size || v.attributes.size || v.attributes["SIZE"];
+          addMany(maybe);
+          if (typeof maybe === 'string' || typeof maybe === 'number') set.add(String(maybe));
+        }
+      });
+    }
+
+    // 4) Last resort: scan product object for any array field with size-like key
+    if (product && typeof product === 'object') {
+      Object.entries(product).forEach(([k, v]) => {
+        if (/size/i.test(k)) addMany(v);
+        if (/age\s*(group|size)?/i.test(k)) addMany(v); // include age-based sizes like 3Y, 5Y
+      });
+    }
+
     return Array.from(set);
   }, [product]);
 
