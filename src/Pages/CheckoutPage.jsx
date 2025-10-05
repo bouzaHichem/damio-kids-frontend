@@ -127,21 +127,43 @@ const CheckoutPage = () => {
 
     // Build items with numeric price/quantity and subtotal
     const items = [];
-    for (const itemId in cartItems) {
-      const entry = cartItems[itemId];
-      const qty = typeof entry === 'number' ? Number(entry) : Number(entry?.quantity || 0);
-      if (qty > 0) {
-        const product = products.find(p => p.id === Number(itemId));
-        if (product) {
-          const price = Number(product.new_price || 0);
-          items.push({
-            productId: product.id,
-            name: product.name,
-            image: product.image,
-            price,
-            quantity: qty,
-            subtotal: price * qty,
-          });
+    if (Array.isArray(cartItems)) {
+      for (const line of cartItems) {
+        const qty = Number(line?.quantity || 0);
+        if (qty > 0) {
+          const product = products.find(p => p.id === Number(line.id));
+          if (product) {
+            const price = Number(product.new_price || 0);
+            items.push({
+              productId: product.id,
+              name: product.name,
+              image: product.image,
+              price,
+              quantity: qty,
+              variant: line.variant || null,
+              subtotal: price * qty,
+            });
+          }
+        }
+      }
+    } else {
+      for (const itemId in cartItems) {
+        const entry = cartItems[itemId];
+        const qty = typeof entry === 'number' ? Number(entry) : Number(entry?.quantity || 0);
+        if (qty > 0) {
+          const product = products.find(p => p.id === Number(itemId));
+          if (product) {
+            const price = Number(product.new_price || 0);
+            items.push({
+              productId: product.id,
+              name: product.name,
+              image: product.image,
+              price,
+              quantity: qty,
+              variant: (entry?.variant || null),
+              subtotal: price * qty,
+            });
+          }
         }
       }
     }
@@ -276,13 +298,14 @@ const CheckoutPage = () => {
       <div className="checkout-order-summary">
         <h3 className="order-section-title">{t('checkout.your_order')}</h3>
 
-        {products.map((product) => {
-          const quantity = cartItems[product.id];
-          if (quantity > 0) {
+        {(Array.isArray(cartItems) ? cartItems : []).map((line, idx) => {
+          const product = products.find(p => p.id === Number(line.id));
+          const qty = Number(line?.quantity || 0);
+          if (product && qty > 0) {
             return (
-              <div key={product.id} className="order-item">
-                <span>{product.name} × {quantity}</span>
-                <span>{(product.new_price * quantity).toFixed(2)} د.ج</span>
+              <div key={`${line.id}|${idx}`} className="order-item">
+                <span>{product.name} × {qty}</span>
+                <span>{(product.new_price * qty).toFixed(2)} د.ج</span>
               </div>
             );
           }

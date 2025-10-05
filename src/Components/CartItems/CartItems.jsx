@@ -8,31 +8,29 @@ import { getImageUrl } from "../../utils/imageUtils";
 import { useI18n } from "../../utils/i18n";
 
 const CartItems = () => {
-  const { products, cartItems, addToCart, removeFromCart, setCartItems, getTotalCartAmount } = useContext(ShopContext);
+  const { products, cartItems, addToCart, removeFromCart, removeLine, getTotalCartAmount, getCartLines } = useContext(ShopContext);
   const navigate = useNavigate();
   const [promo, setPromo] = useState("");
   const { t } = useI18n();
 
-  const items = useMemo(
-    () => products.filter((p) => {
-      const entry = cartItems[p.id];
-      const qty = typeof entry === 'number' ? entry : (entry?.quantity || 0);
-      return qty > 0;
-    }),
-    [products, cartItems]
-  );
+  const lines = useMemo(() => {
+    const entries = Array.isArray(cartItems) ? cartItems : [];
+    return entries
+      .map((l, idx) => {
+        const p = products.find(x => x.id === Number(l.id));
+        if (!p) return null;
+        return { key: `${l.id}|${l.variant?.size || '-'}|${l.variant?.color || '-'}|${l.variant?.age || '-'}`, product: p, qty: Number(l.quantity || 0), variant: l.variant || null };
+      })
+      .filter(Boolean);
+  }, [products, cartItems]);
 
   const subtotal = getTotalCartAmount();
   const shipping = 0;
   const total = subtotal + shipping;
 
-  const handleRemoveAll = (id) => {
-    setCartItems((prev) => ({ ...prev, [id]: 0 }));
-  };
-
   const formatPrice = (value) => `${currency}${value}`;
 
-  if (items.length === 0) {
+  if (lines.length === 0) {
     return (
       <div className="cart-empty">
         <div className="card">
@@ -53,16 +51,16 @@ const CartItems = () => {
         <section className="cart-list">
           <h1 className="title">{t('cart.title')}</h1>
           <div className="list">
-            {items.map((p) => {
-              const entry = cartItems[p.id];
-              const qty = typeof entry === 'number' ? entry : (entry?.quantity || 0);
-              const variant = typeof entry === 'number' ? null : (entry?.variant || null);
+            {lines.map((line) => {
+              const p = line.product;
+              const qty = line.qty;
+              const variant = line.variant;
               const unit = Number(p.new_price || 0);
               const old = Number(p.old_price || 0);
               const hasDiscount = old > unit && unit > 0;
               const discountPct = hasDiscount ? Math.round(((old - unit) / old) * 100) : 0;
               return (
-                <div key={p.id} className="cart-row">
+                <div key={line.key} className="cart-row">
                   <div className="media">
                     <img src={getImageUrl(p.image)} alt={p.name} />
                   </div>
@@ -84,12 +82,12 @@ const CartItems = () => {
                     </div>
                   </div>
                   <div className="qty">
-                    <button aria-label="Decrease" onClick={() => removeFromCart(p.id)}>-</button>
+                    <button aria-label="Decrease" onClick={() => removeFromCart(p.id, variant)}>-</button>
                     <input readOnly value={qty} aria-label="Quantity" />
-                    <button aria-label="Increase" onClick={() => addToCart(p.id)}>+</button>
+                    <button aria-label="Increase" onClick={() => addToCart(p.id, variant)}>+</button>
                   </div>
                   <div className="line-total">{formatPrice(unit * qty)}</div>
-                  <button className="remove" aria-label="Remove" onClick={() => handleRemoveAll(p.id)}>
+                  <button className="remove" aria-label="Remove" onClick={() => removeLine(p.id, variant)}>
                     <img src={cross_icon} alt="remove" />
                   </button>
                 </div>

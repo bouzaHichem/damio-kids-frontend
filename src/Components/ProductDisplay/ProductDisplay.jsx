@@ -1,10 +1,13 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, useRef } from "react";
 import "./ProductDisplay.css";
 import star_icon from "../Assets/star_icon.png";
 import star_dull_icon from "../Assets/star_dull_icon.png";
 import { ShopContext } from "../../Context/ShopContext";
 import { currency } from "../../App";
-import { getImageUrl, getProductImages } from "../../utils/imageUtils";
+import { getProductImages } from "../../utils/imageUtils";
+import { toast } from "react-hot-toast";
+import ImageGallery from "react-image-gallery";
+import "react-image-gallery/styles/css/image-gallery.css";
 
 const ProductDisplay = ({ product }) => {
   const { addToCart } = useContext(ShopContext);
@@ -14,6 +17,9 @@ const ProductDisplay = ({ product }) => {
   const [selectedColor, setSelectedColor] = useState("");
   const [selectedAge, setSelectedAge] = useState("");
   const [mainImage, setMainImage] = useState("");
+  const [quantity, setQuantity] = useState(1);
+  const [zoom, setZoom] = useState(false);
+  const galleryRef = useRef(null);
 
   // Stock count for selected variant or product general stock
   const [stockCount, setStockCount] = useState(0);
@@ -35,21 +41,21 @@ const ProductDisplay = ({ product }) => {
     }
 
     // Initialize stock count fallback to product stock
-    if (product.stock_quantity !== undefined) {
+    if (product.stock_quantity !== undefined && product.stock_quantity !== null) {
       setStockCount(product.stock_quantity);
     }
   }, [product]);
 
   // Function to determine stock for selected variant if available
   useEffect(() => {
-    if (product.variants && selectedSize && selectedColor) {
+    if (product?.variants && selectedSize && selectedColor) {
       const variant = product.variants.find(v => v.size === selectedSize && v.color === selectedColor);
       if (variant) {
         setStockCount(variant.stock_quantity || 0);
       } else {
         setStockCount(0);
       }
-    } else if (product.stock_quantity !== undefined) {
+    } else if (product?.stock_quantity !== undefined && product?.stock_quantity !== null) {
       setStockCount(product.stock_quantity);
     }
   }, [selectedSize, selectedColor, product]);
@@ -61,33 +67,52 @@ const ProductDisplay = ({ product }) => {
   const isVariantValid = (!requiresSize || !!selectedSize) && (!requiresColor || !!selectedColor);
   const isAddDisabled = stockStatus === "out-of-stock" || !isVariantValid;
 
+  const maxQty = Math.max(1, Number(stockCount) || 10);
+  const inc = () => setQuantity(q => Math.min(maxQty, q + 1));
+  const dec = () => setQuantity(q => Math.max(1, q - 1));
+
+  const trySetImageForColor = (color) => {
+    const imgs = getProductImages(product);
+    const lower = String(color || '').toLowerCase();
+    const match = imgs.findIndex(u => String(u).toLowerCase().includes(lower));
+    if (match >= 0) {
+      setMainImage(imgs[match]);
+      if (galleryRef.current?.slideToIndex) galleryRef.current.slideToIndex(match);
+    }
+  };
+
   const handleAddToCart = () => {
     if (!isVariantValid) return;
     addToCart(product.id, {
       size: selectedSize || undefined,
       color: selectedColor || undefined,
       age: selectedAge || undefined,
-    });
+    }, quantity);
+    toast.success(`${quantity} × ${product.name} added to cart${selectedColor ? ` • ${selectedColor}` : ''}${selectedSize ? ` • size ${selectedSize}` : ''}`);
   };
 
   const imageList = getProductImages(product);
+  const galleryItems = imageList.map((url) => ({ original: url, thumbnail: url }));
+  const renderItem = (item) => (
+    <div className={`image-zoom-wrap ${zoom ? 'zoomed' : ''}`} onClick={() => setZoom((z) => !z)}>
+      <img src={item.original} alt={product.name} />
+    </div>
+  );
 
   return (
     <div className="productdisplay">
       <div className="productdisplay-left">
-        <div className="productdisplay-img-list">
-          {imageList.map((imageUrl, index) => (
-            <img
-              key={index}
-              src={imageUrl}
-              alt={`${product.name} view ${index + 1}`}
-              onClick={() => setMainImage(imageUrl)}
-              className={mainImage === imageUrl ? 'active' : ''}
-            />
-          ))}
-        </div>
-        <div className="productdisplay-img">
-          <img className="productdisplay-main-img" src={mainImage} alt={product.name} />
+        <div className="productdisplay-gallery">
+          <ImageGallery
+            ref={galleryRef}
+            items={galleryItems}
+            showPlayButton={false}
+            showFullscreenButton={true}
+            showIndex={true}
+            slideOnThumbnailOver={true}
+            onSlide={(idx) => { setMainImage(imageList[idx]); setZoom(false); }}
+            renderItem={renderItem}
+          />
         </div>
       </div>
       <div className="productdisplay-right">
@@ -98,14 +123,14 @@ const ProductDisplay = ({ product }) => {
           <p>(122)</p>
         </div>
         <div className="productdisplay-right-prices">
-          {product.old_price && <div className="productdisplay-right-price-old">{currency}{product.old_price}</div>}
+          {product.old_price ? <div className="productdisplay-right-price-old">{currency}{product.old_price}</div> : null}
           <div className="productdisplay-right-price-new">{currency}{product.new_price}</div>
         </div>
 
         <div className={`productdisplay-stock-info ${stockStatus}`}>
           {stockStatus === "out-of-stock" ? "Out of Stock"
             : stockStatus === "low-stock" ? `Low Stock - Only ${stockCount} left`
-            : `In Stock - ${stockCount} available`}
+            : `In Stock${stockCount ? ` - ${stockCount} available` : ''}`}
         </div>
 
         <div className="productdisplay-right-description">
@@ -118,15 +143,18 @@ const ProductDisplay = ({ product }) => {
             <h3>Select Size</h3>
             <div className="productdisplay-right-sizes">
               {product.sizes.map((size) => (
-                <div 
-                  key={size} 
+                <div
+                  key={size}
                   className={selectedSize === size ? 'selected' : ''}
                   onClick={() => setSelectedSize(size)}
+                  role="button"
+                  aria-label={`Select size ${size}`}
                 >
                   {size}
                 </div>
               ))}
             </div>
+            <p className="size-helper">Select your child’s usual size or one size up if they have wider feet.</p>
           </div>
         )}
 
@@ -139,8 +167,8 @@ const ProductDisplay = ({ product }) => {
                 <div
                   key={color}
                   className={`productdisplay-color-option ${selectedColor === color ? 'selected' : ''}`}
-                  style={{backgroundColor: color.toLowerCase()}}
-                  onClick={() => setSelectedColor(color)}
+                  style={{ backgroundColor: color.toLowerCase() }}
+                  onClick={() => { setSelectedColor(color); trySetImageForColor(color); }}
                   title={color}
                 />
               ))}
@@ -148,7 +176,17 @@ const ProductDisplay = ({ product }) => {
           </div>
         )}
 
-        {/* Age range selector */}
+        {/* Quantity selector */}
+        <div className="qty-row">
+          <span className="qty-label">Quantity</span>
+          <div className="qty-box">
+            <button aria-label="Decrease quantity" onClick={dec} disabled={quantity <= 1}>-</button>
+            <input aria-label="Quantity" readOnly value={quantity} />
+            <button aria-label="Increase quantity" onClick={inc} disabled={quantity >= maxQty}>+</button>
+          </div>
+        </div>
+
+        {/* Age range info */}
         {product.ageRange && (
           <div className="productdisplay-variant-section">
             <h3>Age Range</h3>
@@ -158,7 +196,7 @@ const ProductDisplay = ({ product }) => {
           </div>
         )}
 
-        <button onClick={handleAddToCart} disabled={isAddDisabled}>
+        <button className="btn-add" onClick={handleAddToCart} disabled={isAddDisabled}>
           {stockStatus === "out-of-stock" ? "OUT OF STOCK" : (!isVariantValid ? "SELECT OPTIONS" : "ADD TO CART")}
         </button>
 
@@ -176,6 +214,19 @@ const ProductDisplay = ({ product }) => {
               {product.tags.map((tag) => <span key={tag} className="productdisplay-tag">{tag}</span>)}
             </div>
           )}
+        </div>
+      </div>
+
+      {/* Sticky mobile ATC bar */}
+      <div className="sticky-atc">
+        <div className="sticky-inner">
+          <div className="sticky-price">{currency}{product.new_price}</div>
+          <div className="qty-box">
+            <button aria-label="Decrease quantity" onClick={dec} disabled={quantity <= 1}>-</button>
+            <input aria-label="Quantity" readOnly value={quantity} />
+            <button aria-label="Increase quantity" onClick={inc} disabled={quantity >= maxQty}>+</button>
+          </div>
+          <button className="btn-add" onClick={handleAddToCart} disabled={isAddDisabled}>Add to Cart</button>
         </div>
       </div>
     </div>
