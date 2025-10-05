@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect, useRef } from "react";
+import React, { useContext, useState, useEffect, useRef, useMemo } from "react";
 import "./ProductDisplay.css";
 import star_icon from "../Assets/star_icon.png";
 import star_dull_icon from "../Assets/star_dull_icon.png";
@@ -62,7 +62,24 @@ const ProductDisplay = ({ product }) => {
 
   const stockStatus = stockCount === 0 ? "out-of-stock" : stockCount <= 5 ? "low-stock" : "in-stock";
 
-  const requiresSize = Array.isArray(product.sizes) && product.sizes.length > 0;
+  // Consolidate all size-like options: variant sizes, clothing sizes, custom sizes, and shoe sizes
+  const allSizes = useMemo(() => {
+    const set = new Set();
+    // 1) Sizes from explicit arrays
+    (product?.sizes || []).forEach(s => s && set.add(String(s)));
+    (product?.customSizes || []).forEach(s => s && set.add(String(s)));
+    (product?.shoeSizes || []).forEach(s => s && set.add(String(s)));
+    // 2) Sizes derived from variant objects
+    if (Array.isArray(product?.variants)) {
+      product.variants.forEach(v => {
+        const vs = v?.size;
+        if (vs) set.add(String(vs));
+      });
+    }
+    return Array.from(set);
+  }, [product]);
+
+  const requiresSize = Array.isArray(allSizes) && allSizes.length > 0;
   const requiresColor = Array.isArray(product.colors) && product.colors.length > 0;
   const isVariantValid = (!requiresSize || !!selectedSize) && (!requiresColor || !!selectedColor);
   const isAddDisabled = stockStatus === "out-of-stock" || !isVariantValid;
@@ -137,12 +154,12 @@ const ProductDisplay = ({ product }) => {
           {product.description}
         </div>
 
-        {/* Size selector */}
-        {product.sizes && product.sizes.length > 0 && (
+        {/* Size selector (merged: sizes, customSizes, shoeSizes, variant sizes) */}
+        {allSizes && allSizes.length > 0 && (
           <div className="productdisplay-variant-section">
             <h3>Select Size</h3>
             <div className="productdisplay-right-sizes">
-              {product.sizes.map((size) => (
+              {allSizes.map((size) => (
                 <div
                   key={size}
                   className={selectedSize === size ? 'selected' : ''}
@@ -154,7 +171,7 @@ const ProductDisplay = ({ product }) => {
                 </div>
               ))}
             </div>
-            <p className="size-helper">Select your child’s usual size or one size up if they have wider feet.</p>
+            <p className="size-helper">Please select a size (shoe sizes, clothing sizes like XS–XL, or age sizes like 3Y, 5Y).</p>
           </div>
         )}
 
