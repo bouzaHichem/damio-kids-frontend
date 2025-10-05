@@ -125,6 +125,21 @@ const CheckoutPage = () => {
       return;
     }
 
+    // Normalize phone to ASCII digits (+ allowed) to satisfy backend validation
+    const normalizePhone = (p) => {
+      try {
+        let s = String(p || '').trim();
+        s = s.replace(/[\u0660-\u0669]/g, (d) => String(d.charCodeAt(0) - 0x0660));
+        s = s.replace(/[\u06F0-\u06F9]/g, (d) => String(d.charCodeAt(0) - 0x06F0));
+        const leadPlus = s.startsWith('+');
+        s = s.replace(/[^0-9]/g, '');
+        if (leadPlus) s = '+' + s;
+        return s;
+      } catch { return String(p || ''); }
+    };
+
+    const phoneNorm = normalizePhone(form.telephone);
+
     // Build items with numeric price/quantity and subtotal
     const items = [];
     if (Array.isArray(cartItems)) {
@@ -190,11 +205,11 @@ const CheckoutPage = () => {
       customerInfo: {
         name: fullName,
         email: (localStorage.getItem('userEmail') || `guest.${Date.now()}@damiokids.com`),
-        phone: form.telephone,
+        phone: phoneNorm,
       },
       shippingAddress: {
         fullName,
-        phone: form.telephone,
+        phone: phoneNorm,
         wilaya: form.wilaya,
         commune: form.commune,
         address: form.adresse,
