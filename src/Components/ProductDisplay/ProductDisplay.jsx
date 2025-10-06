@@ -111,8 +111,11 @@ const ProductDisplay = ({ product }) => {
     // 4) Last resort: scan product object for any array field with size-like key
     if (product && typeof product === 'object') {
       Object.entries(product).forEach(([k, v]) => {
-        if (/size/i.test(k)) addMany(v);
-        if (/age\s*(group|size)?/i.test(k)) addMany(v); // include age-based sizes like 3Y, 5Y
+        const kl = String(k).toLowerCase();
+        // include fields that are clearly size-related, avoid matching 'images'
+        if (kl === 'sizes' || kl.endsWith('sizes') || kl.includes('sizeoptions')) addMany(v);
+        // include age-related arrays but avoid 'image(s)'
+        if (kl.startsWith('age') || kl.includes('agegroup')) addMany(v); // 3Y, 5Y, etc.
       });
     }
 
