@@ -119,7 +119,44 @@ const ProductDisplay = ({ product }) => {
     return Array.from(set);
   }, [product]);
 
-  const requiresSize = Array.isArray(allSizes) && allSizes.length > 0;
+  // Fallback sizes when backend has none: derive from ageRange or category
+  const fallbackSizes = useMemo(() => {
+    // 1) Derive from ageRange in months (convert to years labels like 3Y..10Y)
+    const minM = Number(product?.ageRange?.min);
+    const maxM = Number(product?.ageRange?.max);
+    if (Number.isFinite(minM) && Number.isFinite(maxM) && maxM > 0) {
+      const minY = Math.max(1, Math.round(minM / 12));
+      const maxY = Math.max(minY, Math.round(maxM / 12));
+      const list = [];
+      for (let y = minY; y <= maxY; y++) list.push(`${y}Y`);
+      if (list.length) return list;
+    }
+
+    const cat = (product?.categoryName || product?.category || '').toLowerCase();
+    const sub = (product?.subcategoryName || product?.subcategory || '').toLowerCase();
+
+    // 2) Shoes
+    if (cat.includes('chaussures') || sub.includes('chaussures')) {
+      return ['24','25','26','27','28','29','30','31','32','33','34','35'];
+    }
+
+    // 3) Baby (months)
+    if (cat.includes('bébé') || sub.includes('bébé') || sub.includes('bebe')) {
+      return ['0-3M','3-6M','6-9M','9-12M','12-18M','18-24M'];
+    }
+
+    // 4) Kids clothing (years)
+    if (cat.includes('filles') || cat.includes('garçon') || cat.includes('garcon') || sub.includes('pulls') || sub.includes('pantalons') || sub.includes('vestes') || sub.includes('robes')) {
+      return ['3Y','4Y','5Y','6Y','7Y','8Y','9Y','10Y','12Y'];
+    }
+
+    // 5) Letter sizes fallback
+    return ['XS','S','M','L','XL'];
+  }, [product]);
+
+  const displaySizes = allSizes.length > 0 ? allSizes : fallbackSizes;
+
+  const requiresSize = Array.isArray(displaySizes) && displaySizes.length > 0;
   const requiresColor = Array.isArray(product.colors) && product.colors.length > 0;
   const isVariantValid = (!requiresSize || !!selectedSize) && (!requiresColor || !!selectedColor);
   const isAddDisabled = stockStatus === "out-of-stock" || !isVariantValid;
@@ -194,12 +231,12 @@ const ProductDisplay = ({ product }) => {
           {product.description}
         </div>
 
-        {/* Size selector (merged: sizes, customSizes, shoeSizes, variant sizes) */}
-        {allSizes && allSizes.length > 0 && (
+        {/* Size selector (merged + fallbacks: sizes, customSizes, shoeSizes, variant sizes, derived) */}
+        {displaySizes && displaySizes.length > 0 && (
           <div className="productdisplay-variant-section">
             <h3>Select Size</h3>
             <div className="productdisplay-right-sizes">
-              {allSizes.map((size) => (
+              {displaySizes.map((size) => (
                 <div
                   key={size}
                   className={selectedSize === size ? 'selected' : ''}
