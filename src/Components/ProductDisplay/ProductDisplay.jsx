@@ -233,13 +233,12 @@ const ProductDisplay = ({ product }) => {
 
         <div className={`productdisplay-stock-info ${stockStatus}`} role="status" aria-live="polite">
           {stockStatus === "out-of-stock" 
-            ? t('product.out_of_stock', 'Out of Stock')
+            ? t('product.out_of_stock')
             : stockStatus === "low-stock" 
-              ? t('product.low_stock_count', 'Low Stock - Only {count} left', { count: stockCount })
-              : t('product.in_stock_count', stockCount 
-                  ? `In Stock - {count} available` 
-                  : 'In Stock', 
-                  { count: stockCount })
+              ? t('product.low_stock_count', { count: stockCount })
+              : (stockCount 
+                  ? t('product.in_stock_count', { count: stockCount })
+                  : t('product.in_stock'))
           }
         </div>
 
@@ -250,8 +249,8 @@ const ProductDisplay = ({ product }) => {
         {/* Size selector (merged + fallbacks: sizes, customSizes, shoeSizes, variant sizes, derived) */}
         {displaySizes && displaySizes.length > 0 && (
           <div className="productdisplay-variant-section">
-            <h3>{t('product.size', 'Select Size')}</h3>
-            <div className="productdisplay-right-sizes" role="group" aria-label={t('product.size_options', 'Size options')}>
+            <h3>{t('product.size')}</h3>
+            <div className="productdisplay-right-sizes" role="group" aria-label={t('product.size_options')}>
               {displaySizes.map((size) => (
                 <div
                   key={size}
@@ -265,22 +264,22 @@ const ProductDisplay = ({ product }) => {
                       setSelectedSize(size);
                     }
                   }}
-                  aria-label={t('product.select_size', `Select size ${size}`, { size })}
+                  aria-label={t('product.select_size', { size })}
                   aria-pressed={selectedSize === size}
                 >
                   {size}
                 </div>
               ))}
             </div>
-            <p className="size-helper">{t('product.size_helper', 'Please select a size (shoe sizes, clothing sizes like XS–XL, or age sizes like 3Y, 5Y).')}</p>
+            <p className="size-helper">{t('product.size_helper')}</p>
           </div>
         )}
 
         {/* Color selector */}
         {product.colors && product.colors.length > 0 && (
           <div className="productdisplay-variant-section">
-            <h3>{t('product.color', 'Select Color')}</h3>
-            <div className="productdisplay-colors" role="group" aria-label={t('product.color_options', 'Color options')}>
+            <h3>{t('product.color')}</h3>
+            <div className="productdisplay-colors" role="group" aria-label={t('product.color_options')}>
               {product.colors.map((color) => (
                 <div
                   key={color}
@@ -296,7 +295,7 @@ const ProductDisplay = ({ product }) => {
                       trySetImageForColor(color);
                     }
                   }}
-                  aria-label={t('product.select_color', `Select ${color} color`, { color })}
+                  aria-label={t('product.select_color', { color })}
                   aria-pressed={selectedColor === color}
                   title={color}
                 />
@@ -307,10 +306,10 @@ const ProductDisplay = ({ product }) => {
 
         {/* Quantity selector */}
         <div className="qty-row">
-          <span className="qty-label">{t('product.quantity', 'Quantity')}</span>
-          <div className="qty-box" role="group" aria-label={t('product.quantity_selector', 'Quantity selector')}>
+          <span className="qty-label">{t('product.quantity')}</span>
+          <div className="qty-box" role="group" aria-label={t('product.quantity_selector')}>
             <button 
-              aria-label={t('product.decrease_quantity', 'Decrease quantity')} 
+              aria-label={t('product.decrease_quantity')} 
               onClick={dec} 
               disabled={quantity <= 1}
               type="button"
@@ -318,7 +317,7 @@ const ProductDisplay = ({ product }) => {
               -
             </button>
             <input 
-              aria-label={t('product.current_quantity', 'Current quantity')} 
+              aria-label={t('product.current_quantity')} 
               readOnly 
               value={quantity} 
               type="number"
@@ -326,7 +325,7 @@ const ProductDisplay = ({ product }) => {
               max={maxQty}
             />
             <button 
-              aria-label={t('product.increase_quantity', 'Increase quantity')} 
+              aria-label={t('product.increase_quantity')} 
               onClick={inc} 
               disabled={quantity >= maxQty}
               type="button"
@@ -339,9 +338,9 @@ const ProductDisplay = ({ product }) => {
         {/* Age range info */}
         {product.ageRange && (
           <div className="productdisplay-variant-section">
-            <h3>{t('product.age_range', 'Age Range')}</h3>
+            <h3>{t('product.age_range')}</h3>
             <div className="productdisplay-age-range" role="note">
-              {t('product.age_range_months', '{min} - {max} months', { 
+              {t('product.age_range_months', { 
                 min: product.ageRange.min, 
                 max: product.ageRange.max 
               })}
@@ -357,50 +356,50 @@ const ProductDisplay = ({ product }) => {
           aria-describedby={stockStatus !== "in-stock" ? "stock-status" : undefined}
         >
           {stockStatus === "out-of-stock" 
-            ? t('product.out_of_stock_button', 'OUT OF STOCK') 
+            ? t('product.out_of_stock_button') 
             : (!isVariantValid 
-              ? t('product.select_options_button', 'SELECT OPTIONS') 
-              : t('action.add_to_cart', 'ADD TO CART'))}
+              ? t('product.select_options_button') 
+              : t('action.add_to_cart'))}
         </button>
 
         <div className="productdisplay-details">
           <p className="productdisplay-right-category">
-            <span>{t('product.category', 'Category')}:</span> {product.category}
+            <span>{t('product.category')}:</span> {product.category}
           </p>
           {product.brand && (
             <p>
-              <span>{t('product.brand', 'Brand')}:</span> {product.brand}
+              <span>{t('product.brand')}:</span> {product.brand}
             </p>
           )}
           {product.material && (
             <p>
-              <span>{t('product.material', 'Material')}:</span> {product.material}
+              <span>{t('product.material')}:</span> {product.material}
             </p>
           )}
           {product.weight && (
             <p>
-              <span>{t('product.weight', 'Weight')}:</span> {product.weight} g
+              <span>{t('product.weight')}:</span> {product.weight} g
             </p>
           )}
           {product.dimensions && (
             <p>
-              <span>{t('product.dimensions', 'Dimensions')}:</span> 
+              <span>{t('product.dimensions')}:</span> 
               {`${product.dimensions.length || '-'} x ${product.dimensions.width || '-'} x ${product.dimensions.height || '-'}`} cm
             </p>
           )}
           {product.care_instructions && (
             <p>
-              <span>{t('product.care_instructions', 'Care Instructions')}:</span> {product.care_instructions}
+              <span>{t('product.care_instructions')}:</span> {product.care_instructions}
             </p>
           )}
           {product.sku && (
             <p>
-              <span>{t('product.sku', 'SKU')}:</span> {product.sku}
+              <span>{t('product.sku')}:</span> {product.sku}
             </p>
           )}
           {product.tags && product.tags.length > 0 && (
             <div className="productdisplay-tags">
-              <span>{t('product.tags', 'Tags')}:</span>
+              <span>{t('product.tags')}:</span>
               {product.tags.map((tag) => (
                 <span key={tag} className="productdisplay-tag">{tag}</span>
               ))}
@@ -412,12 +411,12 @@ const ProductDisplay = ({ product }) => {
       {/* Sticky mobile ATC bar */}
       <div className="sticky-atc">
         <div className="sticky-inner">
-          <div className="sticky-price" aria-label={t('product.price', 'Price')}>
+          <div className="sticky-price" aria-label={t('product.price')}>
             {currency}{product.new_price}
           </div>
-          <div className="qty-box" role="group" aria-label={t('product.quantity_selector', 'Quantity selector')}>
+          <div className="qty-box" role="group" aria-label={t('product.quantity_selector')}>
             <button 
-              aria-label={t('product.decrease_quantity', 'Decrease quantity')} 
+              aria-label={t('product.decrease_quantity')} 
               onClick={dec} 
               disabled={quantity <= 1}
               type="button"
@@ -425,7 +424,7 @@ const ProductDisplay = ({ product }) => {
               -
             </button>
             <input 
-              aria-label={t('product.current_quantity', 'Current quantity')} 
+              aria-label={t('product.current_quantity')} 
               readOnly 
               value={quantity} 
               type="number"
@@ -433,7 +432,7 @@ const ProductDisplay = ({ product }) => {
               max={maxQty}
             />
             <button 
-              aria-label={t('product.increase_quantity', 'Increase quantity')} 
+              aria-label={t('product.increase_quantity')} 
               onClick={inc} 
               disabled={quantity >= maxQty}
               type="button"
@@ -447,7 +446,7 @@ const ProductDisplay = ({ product }) => {
             disabled={isAddDisabled}
             type="button"
           >
-            {t('action.add_to_cart', 'Add to Cart')}
+            {t('action.add_to_cart')}
           </button>
         </div>
       </div>
