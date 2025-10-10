@@ -18,6 +18,7 @@ import About from "./Pages/About";
 import Contact from "./Pages/Contact";
 import PrivacyPolicy from "./Pages/PrivacyPolicy";
 import TermsOfService from "./Pages/TermsOfService";
+import { I18nProvider } from "./utils/i18n";
 
 
 // Environment-based backend URL configuration
@@ -30,32 +31,34 @@ export const currency = 'د.ج';
 function App() {
 
   return (
-    <div>
-      <Router>
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Shop gender="all" />} />
-          <Route path="/products" element={<AllProducts />} />
-          <Route path='/:category/:subcategory' element={<SubcategoryPage />} />
-          <Route path='/:category' element={<ShopCategory />} />
-          <Route path='/product' element={<Product />}>
-            <Route path=':productId' element={<Product />} />
-          </Route>
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/checkout" element={<CheckoutPage />} />
-          <Route path="/OrderConfirmation" element={<OrderConfirmation />} />
-          <Route path="/collections/:collectionId" element={<CollectionPage />} />
+    <I18nProvider>
+      <div>
+        <Router>
+          <Navbar />
+          <Routes>
+            <Route path="/" element={<Shop gender="all" />} />
+            <Route path="/products" element={<AllProducts />} />
+            <Route path='/:category/:subcategory' element={<SubcategoryPage />} />
+            <Route path='/:category' element={<ShopCategory />} />
+            <Route path='/product' element={<Product />}>
+              <Route path=':productId' element={<Product />} />
+            </Route>
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/checkout" element={<CheckoutPage />} />
+            <Route path="/OrderConfirmation" element={<OrderConfirmation />} />
+            <Route path="/collections/:collectionId" element={<CollectionPage />} />
 
-          <Route path="/login" element={<LoginSignup/>} />
-          <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="/terms-of-service" element={<TermsOfService />} />
-          
-        </Routes>
-        <Footer />
-      </Router>
-    </div>
+            <Route path="/login" element={<LoginSignup/>} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/terms-of-service" element={<TermsOfService />} />
+            
+          </Routes>
+          <Footer />
+        </Router>
+      </div>
+    </I18nProvider>
   );
 }
 
