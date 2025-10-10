@@ -49,8 +49,8 @@ export const DEFAULT_TRANSLATIONS = {
   
   // Product related
   'product.price': 'Price',
-  'product.size': 'Size',
-  'product.color': 'Color',
+  'product.size': 'Select Size',
+  'product.color': 'Select Color',
   'product.quantity': 'Quantity',
   'product.in_stock': 'In Stock',
   'product.out_of_stock': 'Out of Stock',
@@ -65,6 +65,32 @@ export const DEFAULT_TRANSLATIONS = {
   'product.availability': 'Availability',
   'product.shipping': 'Shipping',
   'product.return_policy': 'Return Policy',
+  
+  // Product interaction
+  'product.size_options': 'Size options',
+  'product.size_helper': 'Please select a size (shoe sizes, clothing sizes like XS–XL, or age sizes like 3Y, 5Y).',
+  'product.select_size': 'Select size {size}',
+  'product.color_options': 'Color options',
+  'product.select_color': 'Select {color} color',
+  'product.quantity_selector': 'Quantity selector',
+  'product.decrease_quantity': 'Decrease quantity',
+  'product.increase_quantity': 'Increase quantity',
+  'product.current_quantity': 'Current quantity',
+  'product.age_range': 'Age Range',
+  'product.age_range_months': '{min} - {max} months',
+  
+  // Stock status
+  'product.in_stock_count': 'In Stock - {count} available',
+  'product.low_stock_count': 'Low Stock - Only {count} left',
+  'product.out_of_stock_button': 'OUT OF STOCK',
+  'product.select_options_button': 'SELECT OPTIONS',
+  
+  // Product details
+  'product.material': 'Material',
+  'product.weight': 'Weight',
+  'product.dimensions': 'Dimensions',
+  'product.care_instructions': 'Care Instructions',
+  'product.tags': 'Tags',
   
   // Categories
   'category.boys': 'Boys',
