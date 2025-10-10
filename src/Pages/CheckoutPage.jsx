@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { backend_url } from "../App";
 import { useI18n } from "../utils/i18n";
+import { trackInitiateCheckout } from "../utils/facebookPixel";
 
 const CheckoutPage = () => {
   const { t } = useI18n();
@@ -36,6 +37,49 @@ const CheckoutPage = () => {
   useEffect(() => {
     fetchWilayas();
   }, []);
+
+  // Track InitiateCheckout event when component mounts (user reaches checkout)
+  useEffect(() => {
+    if (cartItems && Object.keys(cartItems).length > 0) {
+      // Build cart items array for tracking
+      const trackingItems = [];
+      
+      if (Array.isArray(cartItems)) {
+        for (const line of cartItems) {
+          const qty = Number(line?.quantity || 0);
+          if (qty > 0) {
+            const product = products.find(p => p.id === Number(line.id));
+            if (product) {
+              trackingItems.push({
+                id: product.id,
+                quantity: qty,
+                product: product
+              });
+            }
+          }
+        }
+      } else {
+        for (const itemId in cartItems) {
+          const entry = cartItems[itemId];
+          const qty = typeof entry === 'number' ? Number(entry) : Number(entry?.quantity || 0);
+          if (qty > 0) {
+            const product = products.find(p => p.id === Number(itemId));
+            if (product) {
+              trackingItems.push({
+                id: product.id,
+                quantity: qty,
+                product: product
+              });
+            }
+          }
+        }
+      }
+
+      if (trackingItems.length > 0) {
+        trackInitiateCheckout(trackingItems, totalAmount);
+      }
+    }
+  }, [cartItems, products, totalAmount]);
 
   // Update available communes when wilaya changes
   useEffect(() => {
@@ -233,6 +277,21 @@ const CheckoutPage = () => {
       const data = await res.json().catch(() => ({}));
 
       if (res.ok) {
+        // Save order data to localStorage for Facebook Pixel Purchase tracking
+        const orderTrackingData = {
+          order_id: data.orderId || `ORDER_${Date.now()}`,
+          items: items.map(item => ({
+            product_id: item.productId,
+            quantity: item.quantity,
+            price: item.price
+          })),
+          total_amount: total,
+          delivery_method: form.deliveryMethod,
+          customer_email: payload.customerInfo.email,
+          customer_phone: payload.customerInfo.phone
+        };
+        localStorage.setItem('lastOrderData', JSON.stringify(orderTrackingData));
+        
         toast.success("Commande envoyée avec succès !");
         setCartItems(getDefaultCart());
         localStorage.removeItem("guest-cart");

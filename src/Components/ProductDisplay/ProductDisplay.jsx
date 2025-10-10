@@ -9,6 +9,7 @@ import { toast } from "react-hot-toast";
 import ImageGallery from "react-image-gallery";
 import "react-image-gallery/styles/css/image-gallery.css";
 import { useI18n } from "../../utils/i18n";
+import { trackViewContent, trackAddToCart } from "../../utils/facebookPixel";
 
 const ProductDisplay = ({ product }) => {
   const { addToCart } = useContext(ShopContext);
@@ -27,6 +28,9 @@ const ProductDisplay = ({ product }) => {
 
   useEffect(() => {
     if (!product) return;
+
+    // Track ViewContent event for Facebook Pixel
+    trackViewContent(product);
 
     // Do not auto-select size/color; user must choose explicitly if required
     if (product.ageRange && typeof product.ageRange === 'object' && product.ageRange.min !== undefined) {
@@ -174,11 +178,20 @@ const ProductDisplay = ({ product }) => {
 
   const handleAddToCart = () => {
     if (!isVariantValid) return;
-    addToCart(product.id, {
+    
+    const selectedOptions = {
       size: selectedSize || undefined,
       color: selectedColor || undefined,
       age: selectedAge || undefined,
-    }, quantity);
+    };
+    
+    // Add to cart
+    addToCart(product.id, selectedOptions, quantity);
+    
+    // Track AddToCart event for Facebook Pixel
+    trackAddToCart(product, quantity, selectedOptions);
+    
+    // Show success toast
     toast.success(`${quantity} × ${product.name} added to cart${selectedColor ? ` • ${selectedColor}` : ''}${selectedSize ? ` • size ${selectedSize}` : ''}`);
   };
 

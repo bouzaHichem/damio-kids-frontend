@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import "./CSS/OrderConfirmation.css";
 import { useI18n } from "../utils/i18n";
+import { trackPurchase } from "../utils/facebookPixel";
 
 const OrderConfirmation = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { t } = useI18n();
   const [orderNumber, setOrderNumber] = useState("");
 
@@ -13,13 +15,34 @@ const OrderConfirmation = () => {
     const randomOrderNumber = Math.floor(Math.random() * 900000) + 100000;
     setOrderNumber(randomOrderNumber.toString());
 
+    // Track Purchase event for Facebook Pixel
+    // Try to get order data from location state or localStorage
+    const orderData = location.state?.orderData || JSON.parse(localStorage.getItem('lastOrderData') || '{}');
+    
+    if (orderData && orderData.total_amount) {
+      // Track the purchase
+      trackPurchase({
+        order_id: orderData.order_id || randomOrderNumber.toString(),
+        items: orderData.items || [],
+        total_amount: orderData.total_amount || 0,
+        delivery_method: orderData.delivery_method || 'home_delivery',
+        payment_method: 'cash_on_delivery'
+      }, {
+        email: orderData.customer_email,
+        phone: orderData.customer_phone
+      });
+    }
+
+    // Clear order data from localStorage after tracking
+    localStorage.removeItem('lastOrderData');
+
     // Redirect to home after 10 seconds
     const timer = setTimeout(() => {
       navigate("/");
     }, 10000);
 
     return () => clearTimeout(timer);
-  }, [navigate]);
+  }, [navigate, location.state]);
 
   const handleBackToHome = () => {
     navigate("/");
